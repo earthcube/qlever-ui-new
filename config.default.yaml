@@ -1,5 +1,15 @@
 wikidata:
   name: Wikidata
   url: https://qlever.dev/api/wikidata
+  default: false
+  engine: QLever
+deepocean:
+  name: deepocean
+  url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/deepoceans
+  default: false
+  engine: QLever
+facetserch:
+  name: facetserch
+  url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/facetsearch
   default: true
   engine: QLever
