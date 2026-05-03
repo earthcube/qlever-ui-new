@@ -1,0 +1,12 @@
+SELECT ?qui_entity (SAMPLE(?name) as ?qui_name) (SAMPLE(?name) as ?qui_alias) (SAMPLE(?count) as ?qui_count) WHERE {
+
+  { SELECT ?qui_entity (COUNT(?qui_entity) AS ?count)
+    WHERE { ?qui_subject ?qui_entity ?qui_object }
+    GROUP BY ?qui_entity }
+
+  BIND (?qui_entity AS ?name)
+
+} GROUP BY ?qui_entity ORDER BY DESC(?qui_count)
+
+LIMIT 40
+OFFSET 0
