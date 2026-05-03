@@ -1,0 +1,14 @@
+## WARNING Not bad performance for all
+## if the SAME TRIPLE COUNT APPEARS it may be a loading issue
+
+SELECT  ?triple_per_jsonld (count(?triplesize) as ?count)
+WHERE     {
+    SELECT  ?g (count(?s) as ?triple_per_jsonld)
+    WHERE     {
+         GRAPH ?g {?s ?p ?o .}
+
+    }
+    GROUP BY ?g
+         }
+GROUP BY ?triple_per_jsonld
+ORDER BY DESC(?count)

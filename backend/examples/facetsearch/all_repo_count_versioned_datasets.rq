@@ -1,0 +1,12 @@
+## double dollar signes are to escape to a single dollar sign when using string template
+prefix schema: <https://schema.org/>
+SELECT  ?repo (count(distinct ?s) as ?versionscount)
+WHERE {
+  GRAPH ?g {
+
+       ?s schema:version ?version .
+
+       } bind(  REPLACE(REPLACE( STR(?g) ,"urn:(?:\\w+):" ,"" ), ":\\w+$$" , "")   as ?repo ) .
+}
+GROUP By ?repo
+ORDER By DESC(?versionscount)

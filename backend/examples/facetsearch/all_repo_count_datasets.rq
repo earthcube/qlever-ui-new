@@ -1,0 +1,12 @@
+## Graphs do not always equal datasets. Especially in non-Earthcube graph stores
+## double dollar signes are to escape to a single dollar sign when using string template
+
+SELECT   ?repo (COUNT(distinct ?g) as ?graphs) (COUNT(*) as ?datasets)
+WHERE     {
+  GRAPH ?g {
+      ?s a <https://schema.org/Dataset> .
+      bind(  REPLACE(REPLACE( STR(?g) ,"urn:(?:\\w+):" ,"" ), ":\\w+$$" , "")   as ?repo )
+   }
+}
+group by ?repo
+

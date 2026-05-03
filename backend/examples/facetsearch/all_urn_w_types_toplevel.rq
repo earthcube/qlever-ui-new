@@ -1,0 +1,12 @@
+# returns the urn and the type of the
+prefix schema: <https://schema.org/>
+SELECT ?s ?type
+WHERE {
+Graph ?g {
+       ?s a ?type .
+        FILTER ( !isBLANK(?s) )  .
+
+       }
+}
+
+GROUP By ?type ?s

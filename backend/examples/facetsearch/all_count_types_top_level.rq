@@ -1,0 +1,14 @@
+# returns count of top level types
+
+prefix schema: <https://schema.org/>
+SELECT  ?type  (count(distinct ?s ) as ?scount)
+WHERE {
+Graph ?g {
+
+       ?s a ?type .
+FILTER ( !isBLANK(?s) )  .
+       }
+}
+
+GROUP By ?type
+ORDER By DESC(?scount)
