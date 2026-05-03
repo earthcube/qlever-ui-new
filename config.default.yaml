@@ -8,8 +8,8 @@ deepocean:
   url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/deepoceans
   default: false
   engine: QLever
-facetserch:
-  name: facetserch
+facetsearch:
+  name: facetsearch
   url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/facetsearch
   default: true
   engine: QLever
