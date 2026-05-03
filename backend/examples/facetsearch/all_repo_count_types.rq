@@ -1,0 +1,12 @@
+## Graphs do not always equal datasets. Especially in non-Earthcube graph stores
+## double dollar signes are to escape to a single dollar sign when using string template
+
+SELECT   ?repo ?type (COUNT(distinct ?g) as ?type_counts)
+WHERE     {
+  GRAPH ?g {
+      ?s a ?type .
+      bind(  REPLACE(REPLACE( STR(?g) ,"urn:(?:\\w+):" ,"" ), ":\\w+$$" , "")   as ?repo )
+   }
+}
+group by ?repo ?type
+order by ?repo DESC(?type_counts)
