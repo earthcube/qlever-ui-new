@@ -1,0 +1,16 @@
+PREFIX schema: <http://schema.org/>
+PREFIX sschema: <https://schema.org/>
+PREFIX qlss: <https://qlever.cs.uni-freiburg.de/spatialSearch/>
+SELECT ?qui_entity (SAMPLE(?name) as ?qui_name) (SAMPLE(?alias) as ?qui_alias) (SAMPLE(?count) as ?qui_count) WHERE {
+  { SELECT ?qui_entity (COUNT(?qui_entity) AS ?count) WHERE {
+     ?geometry sschema:keywords ?qui_entity .
+  } GROUP BY ?qui_entity }
+
+  OPTIONAL { ?qui_entity sschema:name ?name }
+
+  BIND (COALESCE(?optional_alias, ?qui_entity) AS ?alias)
+  FILTER (REGEX(STR(?name), "^water") || REGEX(STR(?alias), "^water"))
+
+} GROUP BY ?qui_entity ORDER BY DESC(?qui_count)
+LIMIT 40
+OFFSET 0
