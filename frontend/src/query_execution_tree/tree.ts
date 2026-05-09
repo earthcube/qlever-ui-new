@@ -69,6 +69,7 @@ function updateTree(
   queryExecutionTree: QueryExecutionTree,
   zoomTo: (x: number, y: number, duration: number) => void
 ) {
+
   const darkMode = localStorage.getItem('theme') === 'dark';
   const oldNodes = root!.descendants();
   const newRoot = d3.hierarchy<QueryExecutionTree>(queryExecutionTree);
@@ -272,7 +273,7 @@ function initializeTree(queryExectionTree: QueryExecutionNode) {
     .attr('y', -boxHeight / 2 + boxPadding)
     .attr('text-anchor', 'left')
     .attr('dominant-baseline', 'middle')
-    .each(function (d) {
+    .each(function(d) {
       fitText(this, replaceIRIs(d.data.description), boxWidth - 20);
     });
 
@@ -299,7 +300,7 @@ function initializeTree(queryExectionTree: QueryExecutionNode) {
     .attr('y', -boxHeight / 2 + boxPadding + 25)
     .attr('text-anchor', 'start')
     .attr('dominant-baseline', 'middle')
-    .each(function (d) {
+    .each(function(d) {
       fitText(this, d.data.column_names.join(', '), boxWidth - 55);
     });
 
@@ -377,12 +378,13 @@ function treeLayout(root: d3.HierarchyNode<QueryExecutionTree>) {
 
   root.eachAfter((node) => {
     if (!node.children) {
-      layouts[node.data.id!] = [[0, boxWidth + boxMargin * 2]];
+      layouts[node.data.id!] = [[[0, boxWidth + boxMargin * 2]]];
     } else {
       const merged = node.children.map((node) => layouts[node.data.id!]).reduce(mergeLayout, []);
-      const center = (merged[0][0] + merged[0][1]) / 2;
+
+      const center = (merged[0][0][0] + merged[0][merged[0].length - 1][1]) / 2;
       layouts[node.data.id!] = [
-        [center - (boxWidth / 2 + boxMargin), center + boxWidth / 2 + boxMargin],
+        [[center - (boxWidth / 2 + boxMargin), center + boxWidth / 2 + boxMargin]],
         ...merged,
       ];
     }
@@ -392,44 +394,40 @@ function treeLayout(root: d3.HierarchyNode<QueryExecutionTree>) {
   root.y = 0;
   root.eachBefore((node) => {
     if (node.children) {
-      const spanWidth = layouts[node.data.id!][1][1] - layouts[node.data.id!][1][0];
-
-      if (node.children.length >= 1) {
-        node.children[0].x = node.x! - spanWidth / 2 + boxWidth / 2 + boxMargin;
-        node.children[0].y = node.y! + boxHeight + boxMargin * 2;
-      }
-      if (node.children.length == 2) {
-        node.children[1].x = node.x! + spanWidth / 2 - (boxWidth / 2 + boxMargin);
-        node.children[1].y = node.y! + boxHeight + boxMargin * 2;
+      const layout = layouts[node.data.id!];
+      for (const [index, child] of node.children.entries()) {
+        child.x = node.x! - layout[0][0][0] + layout[1][index][0];
+        child.y = node.y! + boxHeight + boxMargin * 2;
       }
     }
   });
 }
 
-type Layout = [number, number][];
+type Layout = [number, number][][];
 
 function mergeLayout(layoutLeft: Layout, layoutRight: Layout): Layout {
+
   if (layoutLeft.length == 0 && layoutRight.length == 0) {
-    return [[0, 1]];
+    return [[[0, 0]]];
   } else if (layoutRight.length == 0) {
     return layoutLeft;
   } else if (layoutLeft.length == 0) {
     return layoutRight;
   }
+
   const pushRight = Math.max(
-    ...d3.zip(layoutLeft, layoutRight).map(([left, right]) => left[1] - right[0])
+    ...d3.zip(layoutLeft, layoutRight).map(([left, right]) => left[left.length - 1][1] - right[0][0])
   );
 
-  layoutRight = layoutRight.map(([left, right]) => [left + pushRight, right + pushRight]);
-
+  layoutRight = layoutRight.map((block) => block.map(([left, right]) => [left + pushRight, right + pushRight]));
   const mergedLayout: Layout = [];
   for (let i = 0; i < Math.max(layoutRight.length, layoutLeft.length); i++) {
     if (layoutLeft[i] && layoutRight[i]) {
-      mergedLayout.push([layoutLeft[i][0], layoutRight[i][1]]);
+      mergedLayout.push(layoutLeft[i].concat(layoutRight[i]));
     } else if (layoutLeft[i]) {
       mergedLayout.push(layoutLeft[i]);
     } else if (layoutRight[i]) {
-      mergedLayout.push([layoutRight[i][0], layoutRight[i][1]]);
+      mergedLayout.push(layoutRight[i]);
     }
   }
 
