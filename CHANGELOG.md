@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Added
 
-## [0.2.4] - 2026-04-28
+- Click a node in the Query-execution-tree to open a details panel showing all of its data
+- Infinite scroll for SPARQL query results: additional pages are fetched lazily as the user scrolls, with cancellation support via per-page sub-query IDs
 
 ### Changed
 

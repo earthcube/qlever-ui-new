@@ -125,7 +125,7 @@ async function addService(
     name: slug,
     url: sparqlEndpointconfig.url,
     engine: sparqlEndpointconfig.engine,
-    prefixMap: sparqlEndpointconfig.prefixMap ?? {},
+    prefixMap: sparqlEndpointconfig.prefixMap,
     queries: sparqlEndpointconfig.queryTemplates ?? {},
     default: is_default,
     additionalData: {
