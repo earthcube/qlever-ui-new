@@ -15,6 +15,7 @@ from starlette.types import Scope
 
 from .config_store import ConfigStore
 from .database import connect
+from .example_store import ExampleStore
 from .models import (
     ExampleQuery,
     SharedQuery,
@@ -53,6 +54,7 @@ def require_api_key(x_api_key: str | None = Header(default=None)):
 
 # ── Stores ─────────────────────────────────────────────────────────────────
 config_store = ConfigStore(CONFIG_PATH)
+example_store = ExampleStore(EXAMPLES_DIR)
 db = connect(DB_PATH)
 query_store = QueryStore(db)
 
@@ -175,31 +177,26 @@ async def create_endpoint(
 @router.get("/endpoints/{slug}/examples/")
 async def list_examples(slug: Slug) -> list[ExampleQuery]:
     """Retrieve all example queries for an endpoint. Returns an empty list if none exist."""
-    slug_dir = (EXAMPLES_DIR / slug).resolve()
-    if not slug_dir.is_relative_to(EXAMPLES_DIR):
+    try:
+        return [
+            ExampleQuery(name=name, query=query)
+            for name, query in example_store.list(slug)
+        ]
+    except ValueError:
         raise HTTPException(status_code=400, detail="Invalid slug")
-    if not slug_dir.is_dir():
-        return []
-    return [
-        ExampleQuery(name=p.stem, query=p.read_text())
-        for p in sorted(slug_dir.glob("*.rq"))
-    ]
 
 
 @router.put("/endpoints/{slug}/examples/", dependencies=[Depends(require_api_key)])
 async def update_example(slug: Slug, example: ExampleQuery):
-    """Overwrite the content of an existing example query file."""
-    slug_dir = (EXAMPLES_DIR / slug).resolve()
-    if not slug_dir.is_relative_to(EXAMPLES_DIR):
+    """Overwrite the query of an existing example, preserving its frontmatter."""
+    try:
+        example_store.update(slug, example.name, example.query)
+    except ValueError:
         raise HTTPException(status_code=400, detail="Invalid slug")
-    file_path = (slug_dir / f"{example.name}.rq").resolve()
-    if not file_path.is_relative_to(slug_dir):
-        raise HTTPException(status_code=400, detail="Invalid example name")
-    if not file_path.is_file():
+    except FileNotFoundError:
         raise HTTPException(
             status_code=404, detail=f'Example "{example.name}" not found'
         )
-    file_path.write_text(example.query)
 
 
 @router.post(
@@ -208,19 +205,15 @@ async def update_example(slug: Slug, example: ExampleQuery):
     status_code=201,
 )
 async def create_example(slug: Slug, example: ExampleQuery):
-    """Create a new example query file. Returns 409 if it already exists."""
-    slug_dir = (EXAMPLES_DIR / slug).resolve()
-    if not slug_dir.is_relative_to(EXAMPLES_DIR):
+    """Create a new example query. Returns 409 if the name is already taken."""
+    try:
+        example_store.create(slug, example.name, example.query)
+    except ValueError:
         raise HTTPException(status_code=400, detail="Invalid slug")
-    file_path = (slug_dir / f"{example.name}.rq").resolve()
-    if not file_path.is_relative_to(slug_dir):
-        raise HTTPException(status_code=400, detail="Invalid example name")
-    if file_path.exists():
+    except FileExistsError:
         raise HTTPException(
             status_code=409, detail=f'Example "{example.name}" already exists'
         )
-    slug_dir.mkdir(parents=True, exist_ok=True)
-    file_path.write_text(example.query)
 
 
 @router.delete(
@@ -229,16 +222,13 @@ async def create_example(slug: Slug, example: ExampleQuery):
     status_code=204,
 )
 async def delete_example(slug: Slug, name: str = Body(embed=True)):
-    """Delete an existing example query file."""
-    slug_dir = (EXAMPLES_DIR / slug).resolve()
-    if not slug_dir.is_relative_to(EXAMPLES_DIR):
+    """Delete an existing example query."""
+    try:
+        example_store.delete(slug, name)
+    except ValueError:
         raise HTTPException(status_code=400, detail="Invalid slug")
-    file_path = (slug_dir / f"{name}.rq").resolve()
-    if not file_path.is_relative_to(slug_dir):
-        raise HTTPException(status_code=400, detail="Invalid example name")
-    if not file_path.is_file():
+    except FileNotFoundError:
         raise HTTPException(status_code=404, detail=f'Example "{name}" not found')
-    file_path.unlink()
 
 
 @router.post("/shared-query/")

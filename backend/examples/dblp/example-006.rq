@@ -1,0 +1,7 @@
+#+ title: All predicates, ordered by number of subjects
+
+SELECT ?predicate (COUNT(?subject) as ?count) WHERE {
+  ?subject ?predicate ?object
+}
+GROUP BY ?predicate 
+ORDER BY DESC(?count)

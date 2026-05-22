@@ -1,0 +1,7 @@
+#+ title: All types, sorted by their frequency
+
+SELECT ?type (COUNT(?subject) as ?count) WHERE {
+  ?subject a ?type
+}
+GROUP BY ?type 
+ORDER BY DESC(?count)
