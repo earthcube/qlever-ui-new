@@ -89,6 +89,16 @@ class ExampleQuery(BaseModel):
     name: str
     query: str
 
+    @field_validator("name")
+    @classmethod
+    def _validate_name(cls, v: str) -> str:
+        v = v.strip()
+        if not v:
+            raise ValueError("Example name must not be empty")
+        if "\n" in v or "\r" in v:
+            raise ValueError("Example name must not contain line breaks")
+        return v
+
 
 class SharedQuery(CamelModel):
     id: str
