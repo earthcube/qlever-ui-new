@@ -63,7 +63,7 @@ export function setupWebSocket(urlStr: string, queryId: string): WebSocket {
   const url = new URL(urlStr);
   url.protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
   url.host = window.location.host;
-  url.pathname = url.pathname.replace(/\/$/, '') + `/watch/${queryId}`;
+  url.pathname = url.pathname.replace(/\/$/, '') + `/watch/${queryId}/`;
   return new WebSocket(url);
 }
 
