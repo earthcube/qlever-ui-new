@@ -3,38 +3,39 @@ wikidata:
   url: https://qlever.dev/api/wikidata
   default: false
   engine: QLever
-deepocean:
-  name: deepocean
-  url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/deepoceans
-  default: false
-  engine: QLever
 facetsearch:
   name: facetsearch
   url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/facetsearch
   default: true
   engine: QLever
+deepocean:
+  name: deepocean
+  url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/deepoceans
+  default: false
+  engine: QLever
+
 ecoforecast:
   name: EcoForecast
   url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/ecoforecast
-  default: true
+  default: false
   engine: QLever
 ecrr:
   name: EarthCube Research Resource Registry
   url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/ecrr
-  default: true
+  default: false
   engine: QLever
 geocodesexamples:
   name: Geocodes Demo Data
   url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/geocodesexamples
-  default: true
+  default: false
   engine: QLever
 earthsurface:
   name: earthsurface
   url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/earthsurface
-  default: true
+  default: false
   engine: QLever
 test:
   name: test
   url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/test
-  default: true
+  default: false
   engine: QLever
