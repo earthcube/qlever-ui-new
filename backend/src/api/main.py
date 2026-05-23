@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import os
 import shutil
@@ -5,8 +6,10 @@ from contextlib import asynccontextmanager
 from importlib.resources import files
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
-from fastapi import APIRouter, Body, Depends, FastAPI, Header, HTTPException
+import websockets
+from fastapi import APIRouter, Body, Depends, FastAPI, Header, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -93,6 +96,7 @@ app = FastAPI(
     version="1.0.0",
     description="Expose SPARQL endpoint configurations, shared queries and example as JSON API.",
     lifespan=lifespan,
+    redirect_slashes=False,
 )
 
 app.add_middleware(
@@ -258,6 +262,53 @@ def get_shared_query(short_id: str) -> SharedQuery:
         raise HTTPException(status_code=404, detail="Shared query not found")
     query, creation_date = result
     return SharedQuery(id=short_id, query=query, creation_date=creation_date)
+
+
+@app.websocket("/{path:path}/watch/{query_id}/")
+async def ws_proxy(websocket: WebSocket, path: str, query_id: str):
+    """Proxy WebSocket /watch/ connections to the configured QLever backend."""
+    data = await config_store.get_all()
+    backend_ws_url = None
+    for endpoint in data.values():
+        if endpoint.url:
+            parsed = urlparse(str(endpoint.url))
+            if parsed.path.strip("/") == path.strip("/"):
+                scheme = "wss" if parsed.scheme == "https" else "ws"
+                backend_ws_url = f"{scheme}://{parsed.netloc}{parsed.path.rstrip('/')}/watch/{query_id}/"
+                break
+
+    if backend_ws_url is None:
+        await websocket.close(code=4004, reason="No matching endpoint")
+        return
+
+    await websocket.accept()
+    logger.info("WS proxy: %s -> %s", websocket.url, backend_ws_url)
+
+    try:
+        async with websockets.connect(backend_ws_url) as backend:
+            async def client_to_backend():
+                try:
+                    while True:
+                        msg = await websocket.receive_text()
+                        await backend.send(msg)
+                except (WebSocketDisconnect, Exception):
+                    await backend.close()
+
+            async def backend_to_client():
+                try:
+                    async for msg in backend:
+                        await websocket.send_text(msg if isinstance(msg, str) else msg.decode())
+                except Exception:
+                    pass
+
+            await asyncio.gather(client_to_backend(), backend_to_client())
+    except Exception as e:
+        logger.warning("WS proxy error for %s: %s", backend_ws_url, e)
+    finally:
+        try:
+            await websocket.close()
+        except Exception:
+            pass
 
 
 app.include_router(router, prefix="/ui-api")
