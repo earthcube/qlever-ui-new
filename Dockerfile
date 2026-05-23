@@ -43,6 +43,7 @@ COPY --chown=appuser:appuser backend/src/api api/
 COPY --chown=appuser:appuser backend/examples examples/
 COPY --from=frontend /app/dist frontend_dist/
 COPY --chown=appuser:appuser config.default.yaml config.yaml
+RUN mkdir data/ && chown appuser:appuser data/
 
 ENV PATH="/app/.venv/bin:$PATH" \
     PYTHONDONTWRITEBYTECODE=1 \
