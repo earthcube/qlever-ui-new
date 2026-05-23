@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import os
 import re
@@ -6,8 +7,10 @@ from contextlib import asynccontextmanager
 from importlib.resources import files
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlparse
 
-from fastapi import APIRouter, Body, Depends, FastAPI, Header, HTTPException
+import websockets
+from fastapi import APIRouter, Body, Depends, FastAPI, Header, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -118,6 +121,7 @@ app = FastAPI(
     version="1.0.0",
     description="Expose SPARQL endpoint configurations, shared queries and example as JSON API.",
     lifespan=lifespan,
+    redirect_slashes=False,
 )
 
 app.add_middleware(
