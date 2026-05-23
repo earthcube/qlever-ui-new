@@ -490,11 +490,14 @@
                   </span>
                   <span class="hidden items-center gap-1 text-gray-100"> Cancel </span>
                 </div>
-                <button
-                  id="downloadButton"
-                  class="border-button-border border-x bg-slate-100 dark:bg-slate-700 active:bg-slate-400 dark:active:bg-gray-950 hover:bg-button-hover flex cursor-pointer justify-center px-2 py-1"
+                <div
+                  class="border-button-border bg-slate-100 dark:bg-slate-700 flex items-stretch justify-center border-x"
                 >
-                  <span class="inline-flex items-center gap-1">
+                  <button
+                    id="downloadButton"
+                    title="Download results (TSV)"
+                    class="bg-slate-100 dark:bg-slate-700 active:bg-slate-400 dark:active:bg-gray-950 hover:bg-button-hover flex cursor-pointer items-center gap-1 py-1 pr-1 pl-2"
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -510,8 +513,30 @@
                       />
                     </svg>
                     Download
-                  </span>
-                </button>
+                  </button>
+                  <button
+                    id="downloadFormatButton"
+                    title="Choose download format"
+                    aria-haspopup="menu"
+                    aria-expanded="false"
+                    class="bg-slate-100 dark:bg-slate-700 active:bg-slate-400 dark:active:bg-gray-950 hover:bg-button-hover flex cursor-pointer items-center py-1 pr-2 pl-0.5 text-gray-500 dark:text-gray-400"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke-width="2.5"
+                      stroke="currentColor"
+                      class="size-3"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        d="m19.5 8.25-7.5 7.5-7.5-7.5"
+                      />
+                    </svg>
+                  </button>
+                </div>
                 <button
                   id="shareButton"
                   class="bg-slate-100 dark:bg-slate-700 active:bg-slate-400 dark:active:bg-gray-950 hover:bg-button-hover flex justify-center px-2 py-1 cursor-pointer"
