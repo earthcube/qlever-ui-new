@@ -2,15 +2,20 @@
 """Dump qlue-ui state from external sources into the on-disk dir-mode layout.
 
 Subcommands:
-  configs   Fetch backend configs from a qlue-ui API and write one
-            <slug>.yaml per endpoint.
-  examples  Migrate example queries from a legacy qlever-ui Django SQLite
-            database into examples/<slug>/example-NNN.rq files.
+  configs         Fetch backend configs from a qlue-ui API and write one
+                  <slug>.yaml per endpoint.
+  examples        Migrate example queries from a legacy qlever-ui Django
+                  SQLite DB into examples/<slug>/example-NNN.rq files.
+  shared-queries  Migrate shared queries (backend_link) from a legacy
+                  qlever-ui Django SQLite DB into the qlue-ui shared_query
+                  table.
 """
 
 import argparse
+import hashlib
 import sqlite3
 import sys
+from datetime import date
 from io import StringIO
 from pathlib import Path
 
@@ -176,6 +181,87 @@ def cmd_examples(args):
     print(f"Migrated {total} examples across {len(by_slug)} endpoints.", file=sys.stderr)
 
 
+# ── shared queries ─────────────────────────────────────────────────────────
+
+
+def _normalize_query(query: str) -> str:
+    """Match backend/src/api/query_store.py's normalization so the hash agrees
+    with what `save()` would compute for the same input."""
+    return query.replace("\r\n", "\n").replace("\r", "\n")
+
+
+def _hash_query(query: str) -> str:
+    return hashlib.sha256(query.encode()).hexdigest()
+
+
+def cmd_shared_queries(args):
+    source: Path = args.db
+    target: Path = args.target_db
+
+    if not source.is_file():
+        sys.exit(f"Source DB not found: {source}")
+    if not target.is_file():
+        sys.exit(
+            f"Target DB not found: {target}. Start qlue-ui once so it creates "
+            f"the shared_query schema, then re-run."
+        )
+
+    print(f"Reading backend_link from {source} ...", file=sys.stderr)
+    src_conn = sqlite3.connect(f"file:{source}?mode=ro", uri=True)
+    try:
+        rows = src_conn.execute(
+            "SELECT identifier, content FROM backend_link ORDER BY id"
+        ).fetchall()
+    finally:
+        src_conn.close()
+
+    if not rows:
+        print("No rows in backend_link; nothing to migrate.", file=sys.stderr)
+        return
+
+    normalized = [(ident, _normalize_query(content)) for ident, content in rows]
+
+    tgt_conn = sqlite3.connect(target)
+    try:
+        if (
+            tgt_conn.execute(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name='shared_query'"
+            ).fetchone()
+            is None
+        ):
+            sys.exit(
+                f"Target DB {target} has no `shared_query` table. Start qlue-ui "
+                f"once so it creates the schema, then re-run."
+            )
+
+        existing_ids = {
+            r[0] for r in tgt_conn.execute("SELECT id FROM shared_query").fetchall()
+        }
+        conflicts = [ident for ident, _ in normalized if ident in existing_ids]
+        if conflicts:
+            preview = "\n".join(f"  - {c}" for c in conflicts[:20])
+            tail = f"\n  ... ({len(conflicts) - 20} more)" if len(conflicts) > 20 else ""
+            sys.exit(
+                f"Aborting: {len(conflicts)} identifier(s) already exist in target:\n"
+                f"{preview}{tail}"
+            )
+
+        today = date.today().isoformat()
+        with tgt_conn:
+            tgt_conn.executemany(
+                "INSERT INTO shared_query (id, query, query_hash, creation_date) "
+                "VALUES (?, ?, ?, ?)",
+                [
+                    (ident, q, _hash_query(q), today)
+                    for ident, q in normalized
+                ],
+            )
+    finally:
+        tgt_conn.close()
+
+    print(f"Migrated {len(normalized)} shared queries into {target}.", file=sys.stderr)
+
+
 # ── CLI ────────────────────────────────────────────────────────────────────
 
 
@@ -218,6 +304,24 @@ def main():
         help="Path to the qleverui.sqlite3 database",
     )
     p_ex.set_defaults(func=cmd_examples)
+
+    p_sq = sub.add_parser(
+        "shared-queries",
+        help="Migrate shared queries from a legacy qlever-ui SQLite DB",
+    )
+    p_sq.add_argument(
+        "--db",
+        type=Path,
+        required=True,
+        help="Path to the source qleverui.sqlite3 database",
+    )
+    p_sq.add_argument(
+        "--target-db",
+        type=Path,
+        required=True,
+        help="Path to the qlue-ui shared queries SQLite DB (must already exist)",
+    )
+    p_sq.set_defaults(func=cmd_shared_queries)
 
     args = parser.parse_args()
     args.func(args)
