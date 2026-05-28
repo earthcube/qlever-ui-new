@@ -270,9 +270,8 @@ async def ws_proxy(websocket: WebSocket, path: str, query_id: str):
     data = await config_store.get_all()
     backend_ws_url = None
     for endpoint in data.values():
-        url = endpoint.get("url") if isinstance(endpoint, dict) else getattr(endpoint, "url", None)
-        if url:
-            parsed = urlparse(str(url))
+        if endpoint.url:
+            parsed = urlparse(str(endpoint.url))
             if parsed.path.strip("/") == path.strip("/"):
                 scheme = "wss" if parsed.scheme == "https" else "ws"
                 backend_ws_url = f"{scheme}://{parsed.netloc}{parsed.path.rstrip('/')}/watch/{query_id}/"
