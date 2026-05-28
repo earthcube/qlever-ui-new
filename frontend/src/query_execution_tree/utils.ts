@@ -62,7 +62,7 @@ export const line = d3
 export function setupWebSocket(urlStr: string, queryId: string): WebSocket {
   const url = new URL(urlStr);
   url.protocol = url.protocol === 'https:' ? 'wss:' : 'ws:';
-  url.pathname = url.pathname.replace(/\/$/, '') + `/watch/${queryId}/`;
+  url.pathname = url.pathname.replace(/\/$/, '') + `/watch/${queryId}`;
   return new WebSocket(url);
 }
 
