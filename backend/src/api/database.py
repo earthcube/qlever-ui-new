@@ -9,7 +9,6 @@ def connect(db_path: Path) -> sqlite3.Connection:
     """Open a SQLite connection and initialise the schema."""
     logger.info("Opening database at %s", db_path)
     conn = sqlite3.connect(db_path, check_same_thread=False)
-    conn.execute("PRAGMA journal_mode=WAL")
     conn.execute(
         """
         CREATE TABLE IF NOT EXISTS shared_query (
