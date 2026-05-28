@@ -20,8 +20,7 @@ COPY --from=ghcr.io/astral-sh/uv:0.11.6 /uv /uvx /bin/
 
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
-    UV_PYTHON_DOWNLOADS=0 \
-    DB_FILE=data/shared-queries.db
+    UV_PYTHON_DOWNLOADS=0
 
 WORKDIR /app
 
@@ -46,7 +45,6 @@ COPY --chown=appuser:appuser backend/src/api api/
 COPY --chown=appuser:appuser backend/examples examples/
 COPY --from=frontend /app/dist frontend_dist/
 COPY --chown=appuser:appuser config.default.yaml config.yaml
-RUN mkdir data/ && chown appuser:appuser data/
 
 ENV PATH="/app/.venv/bin:$PATH" \
     PYTHONDONTWRITEBYTECODE=1 \
