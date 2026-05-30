@@ -40,10 +40,11 @@ jobs:
         with:
           images: ghcr.io/${{ github.repository }}
           tags: |
-            # tags 1.2.3, 1.2 and 1 (only if the leading group is not zero).
-            type=semver,pattern={{version}} # automatically adds a latest tag
-            type=semver,pattern={{major}}.{{minor}},enable=${{ !startsWith(github.ref, 'refs/tags/v0.0.') }}
-            type=semver,pattern={{major}},enable=${{ !startsWith(github.ref, 'refs/tags/v0.') }}
+            type=ref,event=branch
+            type=sha
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}},enable=${{ startsWith(github.ref, 'refs/tags/v') && !startsWith(github.ref, 'refs/tags/v0.0.') }}
+            type=semver,pattern={{major}},enable=${{ startsWith(github.ref, 'refs/tags/v') && !startsWith(github.ref, 'refs/tags/v0.') }}
             type=edge
 
       # ---------- BUILD IMAGE ----------
