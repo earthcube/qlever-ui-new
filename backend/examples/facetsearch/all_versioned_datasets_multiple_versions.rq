@@ -1,0 +1,17 @@
+prefix schema: <http://schema.org/>
+prefix sschema: <https://schema.org/>
+SELECT distinct ?subj ?sameAs ?version ?url where {
+    {SELECT distinct  ?sameAs (MAX(?version2) as ?version  )
+    where {
+       ?subj schema:sameAs|sschema:sameAs ?sameAs .
+        ?subj schema:version|sschema:version ?version2 .
+    filter (?version2 >1)
+    }
+        GROUP BY ?sameAs
+}
+        ?subj schema:identifier|sschema:identifier ?url .
+        ?subj schema:version|sschema:version ?version .
+        ?subj schema:sameAs|sschema:sameAs ?sameAs .
+    }
+    GROUP BY ?sameAs ?version  ?subj  ?url
+order by ?sameAs ?version
