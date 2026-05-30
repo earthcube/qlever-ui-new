@@ -3,6 +3,7 @@ wikidata:
   url: https://qlever.dev/api/wikidata
   default: false
   engine: QLever
+  preset: [common_prefixes, qlever_default]
 facetsearch:
   name: facetsearch
   url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/facetsearch
