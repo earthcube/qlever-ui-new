@@ -98,6 +98,7 @@ To customize, mount your own `config.yaml` into the container — or, to keep pe
 | `DB_FILE` | `data.db` | Path to the SQLite database (shared queries) |
 | `API_KEY` | *(unset)* | If set, protects write endpoints (PATCH, PUT, POST, DELETE) |
 | `CORS_ORIGINS` | `*` | Comma-separated list of allowed CORS origins |
+| `BASE_PATH` | `/` | Sub-path to serve the app under (e.g. `/ui/`). Drives both backend routing and frontend asset/URL resolution at runtime |
 
 ### 4. Deploying with a Proxy
 
@@ -127,6 +128,10 @@ a2enmod proxy proxy_http headers
     ProxyPassReverse / http://localhost:7000/
 </VirtualHost>
 ```
+
+#### Serving under a sub-path
+
+To serve the app under a sub-path instead of the domain root, set the `BASE_PATH` env var (e.g. `BASE_PATH=/ui/`). The same image works under any prefix without rebuilding — the backend mounts itself under the prefix and natively owns `/ui/...`, so no proxy path-rewriting is required.
 
 ## Keyboard Shortcuts
 
