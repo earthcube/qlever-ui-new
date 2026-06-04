@@ -1,4 +1,5 @@
-export const BASE_PATH = import.meta.env.BASE_URL ?? '/';
+/** Runtime base path, derived from the server-injected `<base href>` (e.g. `/` or `/ui/`). */
+export const BASE_PATH = new URL(document.baseURI).pathname;
 
 /** Returns a debounced version of `fn` that delays invocation by `delay` ms. */
 export function debounce<T extends (...args: any[]) => any>(
@@ -23,7 +24,9 @@ export async function sleep(ms: number): Promise<void> {
 
 /** Extracts `[backendSlug, savedQueryId]` from the URL pathname segments. */
 export function getPathParameters(): [string | undefined, string | undefined] {
-  const segments = window.location.pathname.split('/').filter(Boolean);
+  let path = window.location.pathname;
+  if (path.startsWith(BASE_PATH)) path = path.slice(BASE_PATH.length);
+  const segments = path.split('/').filter(Boolean);
   switch (segments.length) {
     case 0:
       return [undefined, undefined];

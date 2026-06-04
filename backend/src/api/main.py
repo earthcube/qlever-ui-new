@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 import shutil
 from contextlib import asynccontextmanager
 from importlib.resources import files
@@ -10,7 +11,7 @@ from fastapi import APIRouter, Body, Depends, FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
-from starlette.responses import Response
+from starlette.responses import HTMLResponse, Response
 from starlette.types import Scope
 
 from .config_store import ConfigStore
@@ -35,15 +36,36 @@ MAX_QUERY_LENGTH = 100_000  # bytes — reject unreasonably large shared queries
 API_KEY = os.getenv("API_KEY")
 
 
+def _normalize_base_path(raw: str) -> str:
+    """Normalize BASE_PATH to a leading+trailing-slash form: "/" or "/ui/"."""
+    raw = raw.strip()
+    return "/" if not raw or raw == "/" else "/" + raw.strip("/") + "/"
+
+
+# Sub-path the app is served under (e.g. "/ui/"). The frontend, router and static
+# mount all derive from this single value so one image works under any sub-path.
+BASE_PATH = _normalize_base_path(os.getenv("BASE_PATH", "/"))
+
+
 class SPAStaticFiles(StaticFiles):
-    """Serves static files with SPA fallback: unknown paths return index.html."""
+    """Serves static files with SPA fallback; injects the runtime <base href>."""
+
+    def __init__(self, *args: Any, base_path: str = "/", **kwargs: Any) -> None:
+        super().__init__(*args, **kwargs)
+        assert self.directory
+        html = (Path(self.directory) / "index.html").read_text()
+        self._index = re.sub(
+            r'<base href="[^"]*"\s*/?>', f'<base href="{base_path}" />', html, count=1
+        )
 
     async def get_response(self, path: str, scope: Scope) -> Response:
+        if path in ("", ".", "index.html"):
+            return HTMLResponse(self._index)
         try:
             return await super().get_response(path, scope)
         except StarletteHTTPException as ex:
-            if ex.status_code == 404:
-                return await super().get_response(".", scope)
+            if ex.status_code == 404:  # SPA fallback (e.g. deep links)
+                return HTMLResponse(self._index)
             raise
 
 
@@ -71,6 +93,7 @@ async def lifespan(_: FastAPI):
         centered = "\n".join(line.center(width) for line in lines)
         print(f"\n\033[36m{centered}\033[0m")
         print(f"\033[33m{tagline.center(width)}\033[0m\n")
+    logger.info("Base path:             %s", BASE_PATH)
     logger.info("Config path:           %s", CONFIG_PATH)
     logger.info("Examples dir:          %s", EXAMPLES_DIR)
     logger.info("Shared Query Database: %s", DB_PATH)
@@ -267,7 +290,11 @@ def get_shared_query(short_id: str) -> SharedQuery:
     return SharedQuery(id=short_id, query=query, creation_date=creation_date)
 
 
-app.include_router(router, prefix="/ui-api")
+app.include_router(router, prefix=f"{BASE_PATH.rstrip('/')}/ui-api")
 
 if FRONTEND_DIR.is_dir():
-    app.mount("/", SPAStaticFiles(directory=FRONTEND_DIR, html=True), name="spa")
+    app.mount(
+        BASE_PATH.rstrip("/") or "/",
+        SPAStaticFiles(directory=FRONTEND_DIR, html=True, base_path=BASE_PATH),
+        name="spa",
+    )

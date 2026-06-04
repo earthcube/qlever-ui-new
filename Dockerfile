@@ -3,9 +3,7 @@ FROM node:22.22.2-alpine AS frontend
 
 WORKDIR /app
 
-ARG BASE_URL
 ARG GIT_COMMIT
-ENV VITE_API_URL=${BASE_URL}
 ENV VITE_GIT_COMMIT=${GIT_COMMIT}
 
 COPY frontend/package*.json ./

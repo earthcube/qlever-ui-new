@@ -14,6 +14,9 @@ if (!gitCommitHash) {
 }
 
 export default defineConfig({
+  // Relative asset URLs so the build resolves against the runtime <base href>,
+  // allowing the same image to be served from any sub-path.
+  base: './',
   define: {
     __GIT_COMMIT__: JSON.stringify(gitCommitHash),
   },

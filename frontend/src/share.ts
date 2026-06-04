@@ -49,16 +49,15 @@ export async function setupShare(editor: Editor) {
     if (!shareLinkId) return;
 
     // NOTE: URL to this query in the QLever UI (short, with query hash)
-    const url1 = new URL(`${slug}/${shareLinkId}`, window.location.origin);
+    const url1 = new URL(`${slug}/${shareLinkId}`, document.baseURI);
     shareLink1.textContent = url1.toString();
 
     // NOTE: URL to this query in the QLever UI (short, with query hash, execute automatically)
-    const url2 = new URL(`${slug}/${shareLinkId}?exec=true`, window.location.origin);
+    const url2 = new URL(`${slug}/${shareLinkId}?exec=true`, document.baseURI);
     shareLink2.textContent = url2.toString();
 
     // NOTE: URL to this query in the QLever UI (long, with full query string)
-    const url3 = new URL(window.location.origin);
-    url3.pathname = slug!;
+    const url3 = new URL(slug!, document.baseURI);
     url3.searchParams.set('query', encodeURIComponent(query));
     shareLink3.textContent = url3.toString();
 

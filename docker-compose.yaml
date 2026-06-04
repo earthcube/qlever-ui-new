@@ -3,7 +3,6 @@ services:
     build:
       context: .
       args:
-        BASE_URL: ${BASE_URL:-}
         GIT_COMMIT: ${GIT_COMMIT:-}
     volumes:
       - data:/app/data
