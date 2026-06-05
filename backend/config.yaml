@@ -29,7 +29,6 @@ wikidata:
   url: https://qlever.dev/api/wikidata
   default: true
   sort_key: A2
-  query_templates:
 
 osm-planet:
   preset:
