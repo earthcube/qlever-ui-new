@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [0.4.0] - 2026-06-12
+
 ### Added
 
 - Sub-path deployment support via a runtime `BASE_PATH` env var, letting one image be served under any sub-path (e.g. `/ui/`) without rebuilding
