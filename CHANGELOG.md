@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+## [0.4.1] - 2026-06-12
+
+### Fixed
+
+- Switching backends now keeps the configured `BASE_PATH` in the URL instead of navigating to the site root
+
 ## [0.4.0] - 2026-06-12
 
 ### Added
