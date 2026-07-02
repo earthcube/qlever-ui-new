@@ -40,28 +40,3 @@ test:
   url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/test
   default: false
   engine: QLever
-ecoforecast:
-  name: EcoForecast
-  url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/ecoforecast
-  default: true
-  engine: QLever
-ecrr:
-  name: EarthCube Research Resource Registry
-  url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/ecrr
-  default: true
-  engine: QLever
-geocodesexamples:
-  name: Geocodes Demo Data
-  url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/geocodesexamples
-  default: true
-  engine: QLever
-earthsurface:
-  name: earthsurface
-  url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/earthsurface
-  default: true
-  engine: QLever
-test:
-  name: test
-  url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/test
-  default: true
-  engine: QLever

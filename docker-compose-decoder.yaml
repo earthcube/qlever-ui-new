@@ -1,0 +1,74 @@
+version: '3.9'
+networks:
+
+  traefik_proxy:
+      name: traefik_proxy
+      external: true
+#export USER_ID=$(id -u)
+#export GROUP_ID=$(id -g)
+volumes:
+  qleverflow_data:
+    name: qleverflow_data_${PROJECT:-services}
+    #name: qlever
+  release_data:
+    name: release_data
+    external: true
+configs:
+  qlever_ui_config:
+    name: qlever-ui-config-${QLEVER_UI_CONFIG:-services}
+    external: true
+services:
+ qlever-ui-base:
+    image: ghcr.io/earthcube/qlever-ui-new:org-decoderv2
+    #ghcr.io/qlever-dev/qlever-ui-new:edge
+    hostname: qlever-ui-${PROJECT:-services}
+    user: "${CURRENT_UID}:${CURRENT_GID}"
+    #init: true
+    volumes:
+      - type: volume
+        source: qleverflow_data
+        target: /app/data
+    #   - qleverflow_data:/app/db
+    # ports:
+    #   - "8176:7000"
+    environment:
+      # this will hopefully be a hostname from the above service
+      QLEVER_HOST: "http://qlever-server-${PROJECT:-services}:7007"
+      QLEVERUI_ALLOWED_HOSTS: "*"
+      QLEVERUI_CSRF_TRUSTED_ORIGINS: ${QLEVERUI_CSRF_TRUSTED_ORIGINS:-https://*.geocodes-aws-dev.earthcube.org}
+      QLEVERUI_SECRET_KEY: ${QLEVERUI_SECRET_KEY:-!!super_secret!!}
+      QLEVERUI_DATABASE_URL: "sqlite:////app/db/qleverui.sqlite3"
+      CORS_ORIGINS: ${QLEVERUI_CORS_ORIGINS:-https://*.geocodes-aws-dev.earthcube.org}
+      CONFIG_FILE: ${QLEVERUI_CONFIG_FILE:-config.yaml}
+      EXAMPLES_DIR: ${QLEVERUI_EXAMPLES_DIR:-examples}
+      DB_FILE: ${QLEVERUI_DB_FILE:-data/data.db}
+#      QLEVER_HOST: "http://0.0.0.0:7007"
+   #    entrypoint: bash
+    # command:
+    #   - gunicorn
+    #   - "--bind"
+    #   - ":7000"
+    #   - "--workers"
+    #   - "3"
+    #   - "--limit-request-line"
+    #   - "10000"
+    #   - "qlever.wsgi:application"
+    #restart: unless-stopped
+#    configs:
+#         - source: qlever_ui_config
+#           target: /app/config.yaml
+    networks: &network
+      - traefik_proxy
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.qlever-ui-${PROJECT:-services}.entrypoints=http"
+      - "traefik.http.routers.qlever-ui-${PROJECT:-services}.rule=Host(`qlever-ui.${HOST}`)"
+      - "traefik.http.middlewares.qlever-ui-${PROJECT:-services}-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.routers.qlever-ui-${PROJECT:-services}.middlewares=qlever-ui-${PROJECT:-services}-https-redirect"
+      - "traefik.http.routers.qlever-ui-${PROJECT:-services}-secure.entrypoints=https"
+      - "traefik.http.routers.qlever-ui-${PROJECT:-services}-secure.rule=Host(`qlever-ui.${HOST}`)"
+      - "traefik.http.routers.qlever-ui-${PROJECT:-services}-secure.tls=true"
+      - "traefik.http.routers.qlever-ui-${PROJECT:-services}-secure.tls.certresolver=httpresolver"
+      - "traefik.http.routers.qlever-ui-${PROJECT:-services}-secure.service=qlever-ui-${PROJECT:-services}"
+      - "traefik.http.services.qlever-ui-${PROJECT:-services}.loadbalancer.server.port=7000"
+      - "traefik.docker.network=traefik_proxy"
