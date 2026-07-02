@@ -10,6 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - The last selected backend is remembered and reused when opening the UI without a backend in the URL path; the loaded backend is reflected in the URL path
+- Http errors from the endpoint (e.g. a 404) are now displayed with their status code, status text, and response body
+
+### Fixed
+
+- Connection errors no longer show "(undefined)"; they now display the actual network error and hint at common causes (server down, wrong endpoint URL, CORS)
 
 ## [0.5.0] - 2026-06-32
 
