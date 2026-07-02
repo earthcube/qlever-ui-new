@@ -13,7 +13,7 @@ export function render_query_error(err: any) {
             `<span class="text-red-500 dark:text-red-600 font-bold">${escapeHtml(err.data.query.substring(err.data.metadata.startIndex, err.data.metadata.stopIndex + 1))}</span>` +
             escapeHtml(err.data.query.substring(err.data.metadata.stopIndex + 1));
         } else {
-          resultsErrorQuery.innerHTML = err.data.query;
+          resultsErrorQuery.innerHTML = escapeHtml(err.data.query);
         }
         break;
       case 'Connection':
