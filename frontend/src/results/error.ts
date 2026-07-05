@@ -5,7 +5,6 @@ export function render_query_error(err: any) {
   const errorSubTitle = document.getElementById('queryErrorSubtitle')! as HTMLSpanElement;
   const resultsErrorQuery = document.getElementById('queryErrorQuery')! as HTMLPreElement;
   if (err.data) {
-    console.log(err.data);
     errorTitle.textContent = '';
     errorSubTitle.textContent = '';
     resultsErrorQuery.innerHTML = '';
