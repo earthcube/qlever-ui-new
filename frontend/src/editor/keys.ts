@@ -77,7 +77,11 @@ export function setup_key_bindings(editor: Editor) {
   monaco.editor.addCommand({
     id: 'jumpToNextPosition',
     run: (_get, args) => {
-      if (!settings.editor.jumpWithTab) return;
+      if (!settings.editor.jumpWithTab) {
+        // NOTE: fall back to default Tab / Shift + Tab behavior
+        monacoEditor.trigger('jumpToNextPosition', args === 'prev' ? 'outdent' : 'tab', null);
+        return;
+      }
       // NOTE: Format document
       editor.languageClient
         .sendRequest('textDocument/formatting', {
