@@ -12,8 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The last selected backend is remembered and reused when opening the UI without a backend in the URL path; the loaded backend is reflected in the URL path
 - Http errors from the endpoint (e.g. a 404) are now displayed with their status code, status text, and response body
 
+### Changed
+
+- Tab-to-jump now uses the new `qlueLs/jump` API (qlue-ls 3.2.0): the language server formats the document and returns the edits together with the final cursor position in one atomic response
+
 ### Fixed
 
+- Jumping with Tab no longer leaves the cursor in the wrong place when formatting removed the line it was on (e.g. a whitespace-only line before `}`)
 - Connection errors no longer show "(undefined)"; they now display the actual network error and hint at common causes (server down, wrong endpoint URL, CORS)
 - Reflecting the loaded backend in the URL path no longer drops query parameters (e.g. `?query=...`)
 - The `query` URL parameter is now URI-decoded before opening it in a tab
