@@ -9,7 +9,7 @@ import { openCommandPrompt } from '../commands/utils';
 import { closeAllModals } from '../keybindings';
 import { settings } from '../settings/init';
 import { openSettings } from '../settings/utils';
-import type { FormattingResult, JumpResult } from '../types/lsp_messages';
+import type { JumpResult } from '../types/lsp_messages';
 import type { Edit } from '../types/monaco';
 import type { Editor } from './init';
 import { toMonacoRange } from './utils';
@@ -82,73 +82,42 @@ export function setup_key_bindings(editor: Editor) {
         monacoEditor.trigger('jumpToNextPosition', args === 'prev' ? 'outdent' : 'tab', null);
         return;
       }
-      // NOTE: Format document
+      // NOTE: the server formats the document, computes the jump target on the
+      //       formatted document and returns the edits + final cursor position
+      const cursorPosition = monacoEditor.getPosition()!;
       editor.languageClient
-        .sendRequest('textDocument/formatting', {
+        .sendRequest('qlueLs/jump', {
           textDocument: { uri: editor.getDocumentUri() },
+          position: {
+            line: cursorPosition.lineNumber - 1,
+            character: cursorPosition.column - 1,
+          },
+          previous: args === 'prev',
           options: {
             tabSize: 2,
             insertSpaces: true,
           },
         })
         .then((response) => {
-          const jumpResult = response as FormattingResult;
-          const edits: Edit[] = jumpResult.map((edit) => ({
+          if (!response) {
+            return;
+          }
+          const jumpResult = response as JumpResult;
+          const edits: Edit[] = jumpResult.edits.map((edit) => ({
             range: toMonacoRange(edit.range),
             text: edit.newText,
           }));
-          monacoEditor.getModel()!.applyEdits(edits);
-
-          // NOTE: request jump position
-          const cursorPosition = monacoEditor.getPosition()!;
-          editor.languageClient
-            .sendRequest('qlueLs/jump', {
-              textDocument: { uri: editor.getDocumentUri() },
-              position: {
-                line: cursorPosition.lineNumber - 1,
-                character: cursorPosition.column - 1,
+          monacoEditor.executeEdits('jumpToNextPosition', edits);
+          if (jumpResult.position) {
+            monacoEditor.setPosition(
+              {
+                lineNumber: jumpResult.position.line + 1,
+                column: jumpResult.position.character + 1,
               },
-              previous: args === 'prev',
-            })
-            .then((response) => {
-              // NOTE: move cursor
-              if (response) {
-                const typedResponse = response as JumpResult;
-                const newCursorPosition = {
-                  lineNumber: typedResponse.position.line + 1,
-                  column: typedResponse.position.character + 1,
-                };
-                if (typedResponse.insertAfter) {
-                  monacoEditor.executeEdits('jumpToNextPosition', [
-                    {
-                      range: new monaco.Range(
-                        newCursorPosition.lineNumber,
-                        newCursorPosition.column,
-                        newCursorPosition.lineNumber,
-                        newCursorPosition.column
-                      ),
-                      text: typedResponse.insertAfter,
-                    },
-                  ]);
-                }
-                monacoEditor.setPosition(newCursorPosition, 'jumpToNextPosition');
-                if (typedResponse.insertBefore) {
-                  monacoEditor.getModel()?.applyEdits([
-                    {
-                      range: new monaco.Range(
-                        newCursorPosition.lineNumber,
-                        newCursorPosition.column,
-                        newCursorPosition.lineNumber,
-                        newCursorPosition.column
-                      ),
-                      text: typedResponse.insertBefore,
-                    },
-                  ]);
-                }
-              }
-            });
+              'jumpToNextPosition'
+            );
+          }
         });
-      monacoEditor.trigger('jumpToNextPosition', 'editor.action.formatDocument', {});
     },
   });
 }

@@ -28,9 +28,8 @@ export enum OperationType {
 }
 
 export interface JumpResult {
-  position: Position;
-  insertBefore?: string;
-  insertAfter?: string;
+  edits: TextEdit[];
+  position: Position | null;
 }
 
 export enum SparqlEngine {
