@@ -116,7 +116,7 @@ export async function configureBackends(editor: Editor) {
   }
   // NOTE: reflect the loaded backend in the URL path when none was specified.
   if (path_slug === undefined && activeEndpointSlug) {
-    history.replaceState(null, '', `${BASE_PATH}${activeEndpointSlug}`);
+    history.replaceState(null, '', `${BASE_PATH}${activeEndpointSlug}${window.location.search}`);
   }
   // NOTE: remember the loaded backend so a new tab without a path reuses it.
   if (activeEndpointSlug) {

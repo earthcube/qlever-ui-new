@@ -24,7 +24,7 @@ export async function handleRequestParameter(editor: Editor) {
   } else {
     const query = params.get('query');
     if (query) {
-      await openOrCreateTab(editor, undefined, query);
+      await openOrCreateTab(editor, undefined, decodeURIComponent(query));
     }
   }
   const exec = params.get('exec');

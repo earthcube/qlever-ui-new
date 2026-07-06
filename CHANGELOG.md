@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Connection errors no longer show "(undefined)"; they now display the actual network error and hint at common causes (server down, wrong endpoint URL, CORS)
+- Reflecting the loaded backend in the URL path no longer drops query parameters (e.g. `?query=...`)
+- The `query` URL parameter is now URI-decoded before opening it in a tab
 
 ## [0.5.0] - 2026-06-32
 
