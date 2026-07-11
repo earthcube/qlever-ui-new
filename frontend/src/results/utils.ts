@@ -142,34 +142,39 @@ export async function showMapViewButton(
   renderConfig: PetrimapsRenderConfig | null
 ) {
   const mapViewButton = document.getElementById('mapViewButton') as HTMLAnchorElement;
+  if (lastBindingIsWKTliteral(head, bindings) || renderConfig != null) {
+    const backend = (await editor.languageClient.sendRequest(
+      'qlueLs/getBackend',
+      {}
+    )) as QlueLsServiceConfig;
+    const mapViewBaseUrl = backend.additionalData.mapViewUrl ?? 'https://qlever.dev/petrimaps/';
+    mapViewButton?.classList.remove('hidden');
+    const query: string = editor.getContent();
+
+    const params = new URLSearchParams({
+      query,
+      backend: backend.url,
+      cfg: JSON.stringify({
+        layers: renderConfig?.layers,
+      }),
+    });
+    mapViewButton.href = `${mapViewBaseUrl}?${new URLSearchParams(params)}`;
+    return;
+  }
+  mapViewButton?.classList.add('hidden');
+}
+
+function lastBindingIsWKTliteral(head: Head, bindings: Binding[]): boolean {
   const n_rows = bindings.length;
   const last_col_var = head.vars[head.vars.length - 1];
   if (n_rows > 0 && last_col_var in bindings[0]) {
     const binding = bindings[0][last_col_var];
-    if (
+    return (
       binding.type === 'literal' &&
       binding.datatype === 'http://www.opengis.net/ont/geosparql#wktLiteral'
-    ) {
-      const backend = (await editor.languageClient.sendRequest(
-        'qlueLs/getBackend',
-        {}
-      )) as QlueLsServiceConfig;
-      const mapViewBaseUrl = backend.additionalData.mapViewUrl ?? 'https://qlever.dev/petrimaps/';
-      mapViewButton?.classList.remove('hidden');
-      const query: string = editor.getContent();
-
-      const params = new URLSearchParams({
-        query,
-        backend: backend.url,
-        cfg: JSON.stringify({
-          layers: renderConfig?.layers,
-        }),
-      });
-      mapViewButton.href = `${mapViewBaseUrl}?${new URLSearchParams(params)}`;
-      return;
-    }
+    );
   }
-  mapViewButton?.classList.add('hidden');
+  return false;
 }
 
 export function showFullResultButton() {
