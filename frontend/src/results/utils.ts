@@ -3,6 +3,7 @@ import type { Editor } from '../editor/init';
 import type { QlueLsServiceConfig } from '../types/backend';
 import type { Head, Meta } from '../types/lsp_messages';
 import type { Binding } from '../types/rdf';
+import type { PetrimapsRenderConfig } from 'sparql-results';
 
 export function clearQueryStats() {
   document.getElementById('resultSize')!.innerText = '?';
@@ -134,7 +135,12 @@ export function escapeHtml(text: string): string {
 }
 
 // Show "Map view" button if the last column contains a WKT string otherwise.
-export async function showMapViewButton(editor: Editor, head: Head, bindings: Binding[]) {
+export async function showMapViewButton(
+  editor: Editor,
+  head: Head,
+  bindings: Binding[],
+  renderConfig: PetrimapsRenderConfig | null
+) {
   const mapViewButton = document.getElementById('mapViewButton') as HTMLAnchorElement;
   const n_rows = bindings.length;
   const last_col_var = head.vars[head.vars.length - 1];
@@ -151,10 +157,14 @@ export async function showMapViewButton(editor: Editor, head: Head, bindings: Bi
       const mapViewBaseUrl = backend.additionalData.mapViewUrl ?? 'https://qlever.dev/petrimaps/';
       mapViewButton?.classList.remove('hidden');
       const query: string = editor.getContent();
-      const params = {
-        query: query,
+
+      const params = new URLSearchParams({
+        query,
         backend: backend.url,
-      };
+        cfg: JSON.stringify({
+          layers: renderConfig?.layers,
+        }),
+      });
       mapViewButton.href = `${mapViewBaseUrl}?${new URLSearchParams(params)}`;
       return;
     }

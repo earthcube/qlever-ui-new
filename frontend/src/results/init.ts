@@ -43,7 +43,7 @@ import {
   stopQueryTimer,
 } from './utils';
 import 'sparql-results';
-import type { SparqlResults, TableRenderConfig } from 'sparql-results';
+import type { PetrimapsRenderConfig, SparqlResults, TableRenderConfig } from 'sparql-results';
 import { render_query_error } from './error';
 
 const pageSize = 100;
@@ -133,9 +133,16 @@ async function executeQueryAndShowResults(editor: Editor) {
   const renderConfig = extractRenderConfig(query);
   if (renderConfig.type === 'table') {
     renderLazyResults(editor);
+  } else if (renderConfig.type === 'petrimaps') {
+    renderLazyResults(editor, renderConfig);
   }
   const timer = startQueryTimer();
-  executeQuery(editor, renderConfig.type === 'table', pageSize, 0)
+  executeQuery(
+    editor,
+    renderConfig.type === 'table' || renderConfig.type === 'petrimaps',
+    pageSize,
+    0
+  )
     .then((result) => {
       showResults();
       stopQueryTimer(timer);
@@ -143,7 +150,6 @@ async function executeQueryAndShowResults(editor: Editor) {
       document.getElementById('queryTimeTotal')!.innerText =
         `${operationTime.toLocaleString('en-US')}ms`;
       window.dispatchEvent(new CustomEvent('execute-ended', { detail: { result: 'success' } }));
-      console.log(renderConfig);
       if ('updateResult' in result) {
         renderUpdateResult(result.updateResult);
       } else if ('queryResult' in result) {
@@ -254,7 +260,7 @@ function renderUpdateResult(result: ExecuteUpdateResult) {
   );
 }
 
-function renderLazyResults(editor: Editor) {
+function renderLazyResults(editor: Editor, renderConfig: PetrimapsRenderConfig | null = null) {
   let head: Head | undefined;
   let first_bindings = true;
   let results_count = 0;
@@ -271,7 +277,7 @@ function renderLazyResults(editor: Editor) {
       renderTableRows(head!, partialResult.bindings, results_count);
       results_count += partialResult.bindings.length;
       if (first_bindings) {
-        showMapViewButton(editor, head!, partialResult.bindings);
+        showMapViewButton(editor, head!, partialResult.bindings, renderConfig);
         scrollToResults();
         window.dispatchEvent(new CustomEvent('infinite-scroll-start'));
         first_bindings = false;
