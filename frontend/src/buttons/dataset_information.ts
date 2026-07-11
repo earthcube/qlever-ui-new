@@ -4,7 +4,7 @@ import { SparqlEngine } from '../types/lsp_messages';
 
 export async function setupDatasetInformation(editor: Editor) {
   const datasetInformationModal = document.getElementById('datasetInformationModal')!;
-  const datasetInformation = document.getElementById('datasetInformation')!;
+  const datasetInformationContainer = document.getElementById('datasetInformationContainer')!;
   const datasetInformationButton = document.getElementById('datasetInformationButton')!;
 
   datasetInformationButton.addEventListener('click', async () => {
@@ -15,7 +15,7 @@ export async function setupDatasetInformation(editor: Editor) {
     closeDatasetInformation();
   });
 
-  datasetInformation.firstElementChild?.addEventListener('click', (e) => {
+  datasetInformationContainer.addEventListener('click', (e) => {
     e.stopPropagation();
   });
 }
