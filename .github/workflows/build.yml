@@ -46,6 +46,12 @@ jobs:
             type=semver,pattern={{major}},enable=${{ !startsWith(github.ref, 'refs/tags/v0.') }}
             type=edge
 
+      - name: Validate backend lockfile
+        run: |
+          python -m pip install --disable-pip-version-check uv==0.11.28
+          cd backend
+          uv lock --check
+
       # ---------- BUILD IMAGE ----------
       - name: Build image
         uses: docker/build-push-action@v6
