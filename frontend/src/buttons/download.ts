@@ -1,8 +1,8 @@
 import type { Editor } from '../editor/init';
 import { getShareLinkId } from '../share';
 import {
-  SparqlEngine,
   type IdentifyOperationTypeResult,
+  SparqlEngine,
   type SparqlService,
 } from '../types/lsp_messages';
 
@@ -19,17 +19,12 @@ const FORMATS: DownloadFormat[] = [
   { label: 'JSON', extension: 'json', action: 'sparql_json_export' },
 ];
 
-// NOTE: Format used when the main download button is clicked directly.
-const DEFAULT_FORMAT = FORMATS[0];
-
 export function setupDownload(editor: Editor) {
   const downloadButton = document.getElementById('downloadButton')!;
-  const formatButton = document.getElementById('downloadFormatButton')!;
 
-  downloadButton.addEventListener('click', () => downloadResults(editor, DEFAULT_FORMAT));
-  formatButton.addEventListener('click', (e) => {
+  downloadButton.addEventListener('click', (e) => {
     e.stopPropagation();
-    toggleFormatMenu(editor, formatButton);
+    toggleFormatMenu(editor, downloadButton);
   });
 }
 
@@ -39,24 +34,24 @@ function toast(type: 'info' | 'warning' | 'error' | 'success', message: string) 
 
 async function downloadResults(editor: Editor, format: DownloadFormat) {
   // NOTE: Check for empty query.
-  let query = editor.getContent();
+  const query = editor.getContent();
   if (query.trim() === '') {
     toast('warning', 'There is no query to execute :(');
     return;
   }
 
   // NOTE: Check operation type.
-  let response = (await editor.languageClient.sendRequest('qlueLs/identifyOperationType', {
+  const response = (await editor.languageClient.sendRequest('qlueLs/identifyOperationType', {
     textDocument: {
       uri: editor.getDocumentUri(),
     },
   })) as IdentifyOperationTypeResult;
-  if (response.operationType != 'Query') {
+  if (response.operationType !== 'Query') {
     toast('warning', 'This is not a query.<br>There is nothing to download.');
     return;
   }
 
-  let sparqlService = await editor.languageClient
+  const sparqlService = await editor.languageClient
     .sendRequest('qlueLs/getBackend', {})
     .then((response) => {
       const typedResponse = response as SparqlService | { error: string };
@@ -81,7 +76,7 @@ async function downloadResults(editor: Editor, format: DownloadFormat) {
   }
 }
 
-// NOTE: Format-picker dropdown anchored to the split-button caret.
+// NOTE: Format-picker dropdown anchored to the download button.
 let openMenu: HTMLElement | null = null;
 let openMenuAnchor: HTMLElement | null = null;
 
@@ -155,7 +150,7 @@ function closeFormatMenu() {
 
 function onDocumentMouseDown(e: MouseEvent): void {
   const target = e.target as Node;
-  // NOTE: Let the caret's own click handler toggle the menu closed.
+  // NOTE: Let the button's own click handler toggle the menu closed.
   if (openMenuAnchor?.contains(target)) return;
   if (openMenu && !openMenu.contains(target)) closeFormatMenu();
 }

@@ -15,27 +15,36 @@
 // Who ever wants to execute a new query has to request the cancelation of the
 // current query and wait for it to end. Only then will a new query be executed.
 
+import { extractConfig, type RenderConfig } from 'sparql-results';
 import type { Editor } from '../editor/init';
 import { settings } from '../settings/init';
 import type { QlueLsServiceConfig } from '../types/backend';
-import type { ExecuteOperationResult, Head, PartialResult } from '../types/lsp_messages';
+import {
+  type ExecuteOperationResult,
+  getOperationTimeMs,
+  type Head,
+  type PartialResult,
+} from '../types/lsp_messages';
 import type { QueryExecutionTree } from '../types/query_execution_tree';
 import type { ExecuteUpdateResult } from '../types/update';
 import { setupInfiniteScroll } from './infinite_scroll';
-import { renderTableHeader, renderTableRows } from './table';
+import { clearTable, renderTableHeader, renderTableRows } from './table';
 import {
   clearQueryStats,
+  hideFullResultButton,
   type QueryStatus,
   scrollToResults,
   showLoadingScreen,
+  showMapViewButton,
   showQueryMetaData,
   showResults,
+  showResultsSize,
   startQueryTimer,
   stopQueryTimer,
-  showMapViewButton,
-  escapeHtml,
-  hideFullResultButton,
 } from './utils';
+import 'sparql-results';
+import type { PetrimapsRenderConfig, SparqlResults, TableRenderConfig } from 'sparql-results';
+import { render_query_error } from './error';
 
 const pageSize = 100;
 
@@ -55,11 +64,13 @@ export interface QueryResultSizeDetails {
 
 let queryStatus: QueryStatus = 'idle';
 
+const element = document.querySelector<SparqlResults>('sparql-results')!;
+
 export async function setupResults(editor: Editor) {
   window.addEventListener('cancel-or-execute', () => {
-    if (queryStatus == 'running') {
+    if (queryStatus === 'running') {
       window.dispatchEvent(new Event('execute-cancle-request'));
-    } else if (queryStatus == 'idle') {
+    } else if (queryStatus === 'idle') {
       window.dispatchEvent(new CustomEvent('execute-start-request'));
     }
   });
@@ -69,7 +80,7 @@ export async function setupResults(editor: Editor) {
 
 function handleSignals(editor: Editor) {
   window.addEventListener('execute-start-request', () => {
-    if (queryStatus == 'idle') {
+    if (queryStatus === 'idle') {
       queryStatus = 'running';
       window.dispatchEvent(new CustomEvent('execute-started'));
       executeQueryAndShowResults(editor);
@@ -115,29 +126,61 @@ async function executeQueryAndShowResults(editor: Editor) {
   showLoadingScreen();
   clearQueryStats();
   hideFullResultButton();
+  element.clear();
+  clearTable();
+
+  const query = editor.getContent();
+  const renderConfig = extractRenderConfig(query);
+  if (renderConfig.type === 'table') {
+    renderLazyResults(editor);
+  } else if (renderConfig.type === 'petrimaps') {
+    renderLazyResults(editor, renderConfig);
+  }
   const timer = startQueryTimer();
-  executeQuery(editor, pageSize, 0)
-    .then((timeMs) => {
+  executeQuery(
+    editor,
+    renderConfig.type === 'table' || renderConfig.type === 'petrimaps',
+    pageSize,
+    0
+  )
+    .then((result) => {
       showResults();
       stopQueryTimer(timer);
-      document.getElementById('queryTimeTotal')!.innerText = timeMs.toLocaleString('en-US') + 'ms';
+      const operationTime = getOperationTimeMs(result);
+      document.getElementById('queryTimeTotal')!.innerText =
+        `${operationTime.toLocaleString('en-US')}ms`;
       window.dispatchEvent(new CustomEvent('execute-ended', { detail: { result: 'success' } }));
+      if ('updateResult' in result) {
+        renderUpdateResult(result.updateResult);
+      } else if ('queryResult' in result) {
+        showResultsSize(result.queryResult.result.results.bindings.length);
+        switch (renderConfig.type) {
+          case 'lineplot':
+            element.render_results(result.queryResult.result, renderConfig);
+            break;
+          case 'table':
+            break;
+          default:
+            break;
+        }
+      }
+      setTimeout(scrollToResults, 100);
     })
     .catch(() => {
       stopQueryTimer(timer);
       const result = queryStatus === 'canceling' ? 'canceled' : 'error';
       window.dispatchEvent(new CustomEvent('execute-ended', { detail: { result } }));
     });
-  renderLazyResults(editor);
 }
 
 // Executes the query in a layz manner.
 // Returns the time the query took end-to-end.
 async function executeQuery(
   editor: Editor,
+  lazy: boolean,
   pageSize: number,
   offset: number = 0
-): Promise<number> {
+): Promise<ExecuteOperationResult> {
   const query = editor.getContent();
   const queryId =
     crypto.randomUUID?.() ?? `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
@@ -146,7 +189,7 @@ async function executeQuery(
       detail: {
         queryId,
         query,
-        pageSize
+        pageSize,
       },
     })
   );
@@ -166,7 +209,7 @@ async function executeQuery(
       });
   });
 
-  let response = (await editor.languageClient
+  const response = (await editor.languageClient
     .sendRequest('qlueLs/executeOperation', {
       textDocument: {
         uri: editor.getDocumentUri(),
@@ -175,67 +218,29 @@ async function executeQuery(
       accessToken: settings.general.accessToken,
       maxResultSize: pageSize,
       resultOffset: offset,
-      lazy: true,
+      lazy,
     })
-    .catch((err) => {
-      const resultsErrorMessage = document.getElementById('resultErrorMessage')! as HTMLSpanElement;
-      const resultsErrorQuery = document.getElementById('resultsErrorQuery')! as HTMLPreElement;
-      if (err.data) {
-        switch (err.data.type) {
-          case 'QLeverException':
-            resultsErrorMessage.textContent = err.data.exception;
-            if (err.data.metadata) {
-              resultsErrorQuery.innerHTML =
-                escapeHtml(err.data.query.substring(0, err.data.metadata.startIndex)) +
-                `<span class="text-red-500 dark:text-red-600 font-bold">${escapeHtml(err.data.query.substring(err.data.metadata.startIndex, err.data.metadata.stopIndex + 1))}</span>` +
-                escapeHtml(err.data.query.substring(err.data.metadata.stopIndex + 1));
-            } else {
-              resultsErrorQuery.innerHTML = err.data.query;
-            }
-            break;
-          case 'Connection':
-            resultsErrorMessage.innerHTML = `The connection to the SPARQL endpoint is broken (${err.data.statusText}).<br> The most common cause is that the QLever server is down. Please try again later and contact us if the error perists`;
-            resultsErrorQuery.innerText = err.data.query;
-            break;
-          case 'Canceled':
-            resultsErrorMessage.innerHTML = `Operation was manually cancelled.`;
-            resultsErrorQuery.innerText = err.data.query;
-            break;
-          case 'InvalidFormat':
-            resultsErrorMessage.innerHTML = `Update result could not be deserialized: ${err.data.message}`;
-            resultsErrorQuery.innerText = err.data.query;
-            break;
-          case 'Deserialization':
-            resultsErrorMessage.innerHTML = `Query result could not be deserialized: ${err.data.message}`;
-            resultsErrorQuery.innerText = err.data.query;
-            break;
-          default:
-            console.log('uncaught error:', err);
-            resultsErrorMessage.innerHTML = `Something went wrong but we don't know what...`;
-            break;
-        }
-      }
-      const resultsContainer = document.getElementById('results') as HTMLSelectElement;
-      resultsContainer.classList.add('hidden');
-      const resultsError = document.getElementById('resultsError') as HTMLSelectElement;
-      resultsError.classList.remove('hidden');
-      window.scrollTo({
-        top: resultsError.offsetTop + 10,
-        behavior: 'smooth',
-      });
-      throw new Error('Query processing error');
-    })) as ExecuteOperationResult;
+    .catch(render_query_error)) as ExecuteOperationResult;
+  return response;
+}
 
-  if ('queryResult' in response) {
-    return response.queryResult.timeMs;
+function extractRenderConfig(query: string): RenderConfig {
+  const extractedConfig = extractConfig(query);
+  if (extractedConfig.ok) {
+    return extractedConfig.config;
   } else {
-    renderUpdateResult(response.updateResult);
-    return response.updateResult.time.total;
+    console.error(
+      `Error while extracting plot config:\n${extractedConfig.error}\nFalling back to table.`
+    );
+    const fallbackConfig: TableRenderConfig = {
+      type: 'table',
+    };
+    return fallbackConfig;
   }
 }
 
 function renderUpdateResult(result: ExecuteUpdateResult) {
-  let head = { vars: ['insertions', 'deletions'] };
+  const head = { vars: ['insertions', 'deletions'] };
   renderTableHeader(head);
   renderTableRows(
     head,
@@ -255,7 +260,7 @@ function renderUpdateResult(result: ExecuteUpdateResult) {
   );
 }
 
-function renderLazyResults(editor: Editor) {
+function renderLazyResults(editor: Editor, renderConfig: PetrimapsRenderConfig | null = null) {
   let head: Head | undefined;
   let first_bindings = true;
   let results_count = 0;
@@ -272,7 +277,7 @@ function renderLazyResults(editor: Editor) {
       renderTableRows(head!, partialResult.bindings, results_count);
       results_count += partialResult.bindings.length;
       if (first_bindings) {
-        showMapViewButton(editor, head!, partialResult.bindings);
+        showMapViewButton(editor, head!, partialResult.bindings, renderConfig);
         scrollToResults();
         window.dispatchEvent(new CustomEvent('infinite-scroll-start'));
         first_bindings = false;
@@ -288,4 +293,5 @@ function renderLazyResults(editor: Editor) {
     const { size } = (event as CustomEvent<QueryResultSizeDetails>).detail;
     document.getElementById('resultSize')!.innerText = size.toLocaleString('en-US');
   });
+  // Hallo, Ianni!
 }

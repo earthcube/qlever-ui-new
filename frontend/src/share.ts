@@ -1,6 +1,6 @@
+import { apiFetch } from './api';
 import type { Editor } from './editor/init';
 import type { QlueLsServiceConfig } from './types/backend';
-import { apiFetch } from './api';
 
 /**
  * Initializes the share modal. Clicking the share button generates multiple
@@ -49,16 +49,15 @@ export async function setupShare(editor: Editor) {
     if (!shareLinkId) return;
 
     // NOTE: URL to this query in the QLever UI (short, with query hash)
-    const url1 = new URL(`${slug}/${shareLinkId}`, window.location.origin);
+    const url1 = new URL(`${slug}/${shareLinkId}`, document.baseURI);
     shareLink1.textContent = url1.toString();
 
     // NOTE: URL to this query in the QLever UI (short, with query hash, execute automatically)
-    const url2 = new URL(`${slug}/${shareLinkId}?exec=true`, window.location.origin);
+    const url2 = new URL(`${slug}/${shareLinkId}?exec=true`, document.baseURI);
     shareLink2.textContent = url2.toString();
 
     // NOTE: URL to this query in the QLever UI (long, with full query string)
-    const url3 = new URL(window.location.origin);
-    url3.pathname = slug!;
+    const url3 = new URL(slug!, document.baseURI);
     url3.searchParams.set('query', encodeURIComponent(query));
     shareLink3.textContent = url3.toString();
 
@@ -141,14 +140,14 @@ export async function getShareLinkId(query: string): Promise<string> {
 /** Fetches the saved query text for the given short ID from the share API. */
 export async function getSharedQuery(id: string): Promise<string> {
   return await apiFetch(`shared-query/${id}`)
-    .then(response => {
+    .then((response) => {
       if (!response.ok) {
         throw new Error(`Could not get query with ID "${id}".`);
       }
       return response.json();
     })
-    .then(json => json.query)
-    .catch(err => {
+    .then((json) => json.query)
+    .catch((err) => {
       console.log(err);
       document.dispatchEvent(
         new CustomEvent('toast', {

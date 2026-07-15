@@ -4,9 +4,9 @@
 // │ Licensed under the MIT license. │ \\
 // └─────────────────────────────────┘ \\
 
+import { currentSlug, state, store } from './state';
 import type { BackendTabsStore } from './types';
 import { SAVE_DEBOUNCE_MS, STORAGE_KEY } from './types';
-import { currentSlug, state, store } from './state';
 
 let saveTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -28,7 +28,7 @@ export function loadStore(): BackendTabsStore | null {
   } catch {
     console.warn(
       `Corrupted tab data in localStorage ("${STORAGE_KEY}"). ` +
-      `Run localStorage.removeItem("${STORAGE_KEY}") in the console to reset.`
+        `Run localStorage.removeItem("${STORAGE_KEY}") in the console to reset.`
     );
     document.dispatchEvent(
       new CustomEvent('toast', {

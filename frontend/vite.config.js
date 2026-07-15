@@ -1,7 +1,7 @@
-import { defineConfig } from 'vite';
-import { execSync } from 'child_process';
-import checker from 'vite-plugin-checker';
+import { execSync } from 'node:child_process';
 import tailwindcss from '@tailwindcss/vite';
+import { defineConfig } from 'vite';
+import checker from 'vite-plugin-checker';
 import wasm from 'vite-plugin-wasm';
 
 let gitCommitHash = process.env.VITE_GIT_COMMIT || '';
@@ -14,6 +14,9 @@ if (!gitCommitHash) {
 }
 
 export default defineConfig({
+  // Relative asset URLs so the build resolves against the runtime <base href>,
+  // allowing the same image to be served from any sub-path.
+  base: './',
   define: {
     __GIT_COMMIT__: JSON.stringify(gitCommitHash),
   },
@@ -29,7 +32,7 @@ export default defineConfig({
       '/ui-api': {
         target: 'http://localhost:8000',
         changeOrigin: true,
-      }
+      },
     },
   },
   plugins: [

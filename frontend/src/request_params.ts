@@ -1,9 +1,9 @@
 import type { Editor } from './editor/init';
 import { openParseTree } from './parse_tree/init';
-import { getShareLinkId, getSharedQuery } from './share';
+import { getSharedQuery, getShareLinkId } from './share';
 import { openOrCreateTab } from './tabs/init';
 import type { QlueLsServiceConfig } from './types/backend';
-import { getPathParameters } from './utils';
+import { BASE_PATH, getPathParameters } from './utils';
 
 /**
  * Handles URL-based parameters to configure the editor on page load.
@@ -17,15 +17,14 @@ import { getPathParameters } from './utils';
 export async function handleRequestParameter(editor: Editor) {
   const params = new URLSearchParams(window.location.search);
   // NOTE: if there is a saved-query id fetch and show the query in a new tab
-  const segments = window.location.pathname.split('/').filter(Boolean);
-  if (segments.length == 2) {
-    const shareId = segments[1];
+  const [slug, shareId] = getPathParameters();
+  if (shareId) {
     const savedQuery = await getSharedQuery(shareId);
     await openOrCreateTab(editor, shareId, savedQuery);
   } else {
     const query = params.get('query');
     if (query) {
-      await openOrCreateTab(editor, undefined, query);
+      await openOrCreateTab(editor, undefined, decodeURIComponent(query));
     }
   }
   const exec = params.get('exec');
@@ -39,12 +38,7 @@ export async function handleRequestParameter(editor: Editor) {
   }
 
   // Clean URL after consuming inbound parameters, keeping only the backend slug
-  const slug = segments[0];
-  if (slug) {
-    history.replaceState(null, '', `/${slug}`);
-  } else {
-    history.replaceState(null, '', '/');
-  }
+  history.replaceState(null, '', slug ? `${BASE_PATH}${slug}` : BASE_PATH);
 }
 
 /** Updates the URL with a share link after every successful query execution. */
@@ -55,7 +49,7 @@ export function setupUrlSync(editor: Editor) {
     const shareId = await getShareLinkId(query).catch(() => null);
     if (!shareId) return;
     let [slug] = getPathParameters();
-    if (slug == undefined) {
+    if (slug === undefined) {
       // NOTE: get backend slug if path parameter is empty.
       const backend = (await editor.languageClient.sendRequest(
         'qlueLs/getBackend',
@@ -63,6 +57,6 @@ export function setupUrlSync(editor: Editor) {
       )) as QlueLsServiceConfig;
       slug = backend.name;
     }
-    history.replaceState(null, '', `/${slug}/${shareId}`);
+    history.replaceState(null, '', `${BASE_PATH}${slug}/${shareId}`);
   });
 }

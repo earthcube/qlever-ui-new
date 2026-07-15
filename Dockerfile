@@ -1,11 +1,9 @@
 # ---- Stage 1: Build the frontend ----
-FROM node:22.22.2-alpine AS frontend
+FROM node:22.23.1-alpine AS frontend
 
 WORKDIR /app
 
-ARG BASE_URL
 ARG GIT_COMMIT
-ENV VITE_API_URL=${BASE_URL}
 ENV VITE_GIT_COMMIT=${GIT_COMMIT}
 
 COPY frontend/package*.json ./
@@ -16,7 +14,7 @@ RUN npm run build
 # ---- Stage 2: Install Python dependencies ----
 FROM python:3.14-slim AS builder
 
-COPY --from=ghcr.io/astral-sh/uv:0.11.6 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.11.28 /uv /uvx /bin/
 
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \

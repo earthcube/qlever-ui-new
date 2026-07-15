@@ -28,9 +28,8 @@ export enum OperationType {
 }
 
 export interface JumpResult {
-  position: Position;
-  insertBefore?: string;
-  insertAfter?: string;
+  edits: TextEdit[];
+  position: Position | null;
 }
 
 export enum SparqlEngine {
@@ -57,9 +56,13 @@ export type ExecuteOperationResult =
   | { queryResult: ExecuteQueryResult }
   | { updateResult: ExecuteUpdateResult };
 
+export function getOperationTimeMs(result: ExecuteOperationResult): number {
+  return 'queryResult' in result ? result.queryResult.timeMs : result.updateResult.time.total;
+}
+
 export interface ExecuteQueryResult {
   timeMs: number;
-  result: SPARQLResults
+  result: SPARQLResults;
 }
 
 export type PartialResult = { header: Header } | { bindings: Binding[] } | { meta: Meta };

@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import type { QueryExecutionNode, QueryExecutionTree } from '../types/query_execution_tree';
-import { replaceIRIs, fitText, line, findActiveNode, activeSubTree } from './utils';
-import { showNodeDetails, hideNodeDetails, getSelectedId, refreshSelectedNode } from './details';
+import { getSelectedId, hideNodeDetails, refreshSelectedNode, showNodeDetails } from './details';
+import { activeSubTree, findActiveNode, fitText, line, replaceIRIs } from './utils';
 
 const colorScaleDark = d3
   .scaleSymlog<string, string>()
@@ -69,7 +69,6 @@ function updateTree(
   queryExecutionTree: QueryExecutionTree,
   zoomTo: (x: number, y: number, duration: number) => void
 ) {
-
   const darkMode = localStorage.getItem('theme') === 'dark';
   const oldNodes = root!.descendants();
   const newRoot = d3.hierarchy<QueryExecutionTree>(queryExecutionTree);
@@ -90,14 +89,14 @@ function updateTree(
   });
   root = newRoot;
   const topNode = findActiveNode(root);
-  if (topNode == undefined) return;
+  if (topNode === undefined) return;
   if (autoZoom && zoomTimeout == null) {
     zoomTo(topNode.x!, topNode.y! + height / 4 - boxHeight - boxMargin, 500);
   }
   const [activeNodes, inactiveNodes] = activeSubTree(topNode);
   const changedInactiveNodes = inactiveNodes.filter((node) => {
     const prevStatus = oldNodes[node.data.id!].data.status;
-    return node.data.status != prevStatus;
+    return node.data.status !== prevStatus;
   });
   const nodesToUpdate = [...activeNodes, ...changedInactiveNodes];
 
@@ -131,7 +130,7 @@ function updateTree(
     );
 
   const formatStatus = (d: d3.HierarchyNode<QueryExecutionNode>) => `Status: ${d.data.status}`;
-  let statusTexts = updateNodeSelection.selectAll('text.status').data((d) => [d]);
+  const statusTexts = updateNodeSelection.selectAll('text.status').data((d) => [d]);
   statusTexts.text(formatStatus);
 
   const activeIds = new Set(activeNodes.map((n) => n.data.id));
@@ -144,7 +143,7 @@ function updateTree(
     .selectAll<SVGPathElement, d3.HierarchyNode<QueryExecutionTree>>('path.glow')
     .data(
       activeNodes.filter((node) =>
-        node.parent ? node.data.status == 'lazily materialized in progress' : false
+        node.parent ? node.data.status === 'lazily materialized in progress' : false
       ),
       (d) => d.data.id!
     )
@@ -173,7 +172,9 @@ function updateTree(
 function initializeTree(queryExectionTree: QueryExecutionNode) {
   root = d3.hierarchy<QueryExecutionTree>(queryExectionTree);
   const nodes = root.descendants();
-  nodes.forEach((node, i) => (node.data.id = i));
+  nodes.forEach((node, i) => {
+    node.data.id = i;
+  });
 
   const container = d3
     .select('#queryExecutionTreeSvg')
@@ -184,7 +185,7 @@ function initializeTree(queryExectionTree: QueryExecutionNode) {
   treeLayout(root);
 
   // NOTE: draw links between nodes
-  const nodesWithParents = nodes.filter((node) => node.data.id != root!.data.id);
+  const nodesWithParents = nodes.filter((node) => node.data.id !== root!.data.id);
   container
     .selectAll<SVGPathElement, d3.HierarchyNode<QueryExecutionTree>>('path.link')
     .data(nodesWithParents, (d) => d.data.id!)
@@ -282,7 +283,7 @@ function initializeTree(queryExectionTree: QueryExecutionNode) {
     .attr('y', -boxHeight / 2 + boxPadding)
     .attr('text-anchor', 'left')
     .attr('dominant-baseline', 'middle')
-    .each(function(d) {
+    .each(function (d) {
       fitText(this, replaceIRIs(d.data.description), boxWidth - 20);
     });
 
@@ -309,7 +310,7 @@ function initializeTree(queryExectionTree: QueryExecutionNode) {
     .attr('y', -boxHeight / 2 + boxPadding + 25)
     .attr('text-anchor', 'start')
     .attr('dominant-baseline', 'middle')
-    .each(function(d) {
+    .each(function (d) {
       fitText(this, d.data.column_names.join(', '), boxWidth - 55);
     });
 
@@ -415,20 +416,23 @@ function treeLayout(root: d3.HierarchyNode<QueryExecutionTree>) {
 type Layout = [number, number][][];
 
 function mergeLayout(layoutLeft: Layout, layoutRight: Layout): Layout {
-
-  if (layoutLeft.length == 0 && layoutRight.length == 0) {
+  if (layoutLeft.length === 0 && layoutRight.length === 0) {
     return [[[0, 0]]];
-  } else if (layoutRight.length == 0) {
+  } else if (layoutRight.length === 0) {
     return layoutLeft;
-  } else if (layoutLeft.length == 0) {
+  } else if (layoutLeft.length === 0) {
     return layoutRight;
   }
 
   const pushRight = Math.max(
-    ...d3.zip(layoutLeft, layoutRight).map(([left, right]) => left[left.length - 1][1] - right[0][0])
+    ...d3
+      .zip(layoutLeft, layoutRight)
+      .map(([left, right]) => left[left.length - 1][1] - right[0][0])
   );
 
-  layoutRight = layoutRight.map((block) => block.map(([left, right]) => [left + pushRight, right + pushRight]));
+  layoutRight = layoutRight.map((block) =>
+    block.map(([left, right]) => [left + pushRight, right + pushRight])
+  );
   const mergedLayout: Layout = [];
   for (let i = 0; i < Math.max(layoutRight.length, layoutLeft.length); i++) {
     if (layoutLeft[i] && layoutRight[i]) {

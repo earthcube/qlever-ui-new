@@ -2,6 +2,8 @@
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
+    <!-- Mount point; the backend rewrites href at serve time from BASE_PATH -->
+    <base href="/" />
     <link rel="icon" type="image/svg+xml" href="src/assets/logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="/src/style.css" rel="stylesheet" />
@@ -19,8 +21,11 @@
         <div
           class="grid grid-cols-[10rem_auto_2rem_2rem] w-full items-center text-neutral-700 dark:text-neutral-200"
         >
-          <span class="inline-flex items-center text-xl font-bold dark:text-white text-black">
+          <span
+            class="inline-flex items-center text-xl font-bold dark:text-white text-black"
+          >
             <svg
+              aria-label="QLever Logo"
               xmlns="http://www.w3.org/2000/svg"
               fill="text-green-600"
               viewBox="0 0 24 24"
@@ -38,16 +43,20 @@
           </span>
           <div class="flex flex-row-reverse px-5"></div>
           <div class="inline-flex">
-            <input id="theme-switch" class="opacity-0 absolute" type="checkbox" />
             <label
-              for="theme-switch"
               class="border border-neutral-300 active:border-green-400 hover:border-green-600 dark:border-neutral-700 text-neutral-500 hover:text-green-600 dark:text-neutral-400 flex items-center justify-center h-8 w-8 cursor-pointer rounded"
             >
-              <!-- <span class="sr-only">theme switcher</span> -->
+              <input
+                id="theme-switch"
+                name="theme-switch"
+                class="opacity-0 absolute"
+                type="checkbox"
+              />
               <span>
                 <!-- sun -->
                 <svg
                   class="dark:hidden block fill-current size-5"
+                  aria-label="Dark mode icon"
                   viewBox="0 0 56 56"
                   height="16"
                   width="16"
@@ -59,6 +68,7 @@
                 <!-- moon -->
                 <svg
                   class="hidden dark:block fill-current size-5"
+                  aria-label="Light mode icon"
                   viewBox="0 0 24 24"
                   height="16"
                   width="16"
@@ -74,7 +84,10 @@
           </div>
         </div>
       </div>
-      <div id="mainContainer" class="w-full lg:w-9/10 xl:w-[72rem] mt-20 mx-auto relative">
+      <div
+        id="mainContainer"
+        class="w-full lg:w-9/10 xl:w-[72rem] mt-20 mx-auto relative"
+      >
         <div
           id="loadingScreen"
           class="absolute top-0 left-0 w-full bg-slate-300 dark:bg-neutral-900 z-50 flex"
@@ -106,23 +119,43 @@
                 <div
                   class="h-[34px] w-40 rounded-t bg-gray-400/30 dark:bg-gray-600/30 border-b-2 border-b-green-600 animate-pulse"
                 ></div>
-                <div class="h-5 w-5 rounded bg-gray-400/20 dark:bg-gray-600/20 animate-pulse"></div>
+                <div
+                  class="h-5 w-5 rounded bg-gray-400/20 dark:bg-gray-600/20 animate-pulse"
+                ></div>
               </div>
               <!-- editor area -->
               <div class="ms-3 mb-5 flex h-[34em] min-h-0 overflow-hidden">
-                <div class="flex h-full flex-1 rounded bg-white dark:bg-[#1e1e1e]">
+                <div
+                  class="flex h-full flex-1 rounded bg-white dark:bg-[#1e1e1e]"
+                >
                   <!-- line-number gutter -->
                   <div
                     class="mr-4 flex w-10 flex-col bg-neutral-100 dark:bg-[#1A1E24] gap-3 pt-3 pe-3"
                   >
-                    <div class="h-3 rounded bg-gray-300/60 dark:bg-gray-600/30 animate-pulse"></div>
-                    <div class="h-3 rounded bg-gray-300/60 dark:bg-gray-600/30 animate-pulse"></div>
-                    <div class="h-3 rounded bg-gray-300/60 dark:bg-gray-600/30 animate-pulse"></div>
-                    <div class="h-3 rounded bg-gray-300/60 dark:bg-gray-600/30 animate-pulse"></div>
-                    <div class="h-3 rounded bg-gray-300/60 dark:bg-gray-600/30 animate-pulse"></div>
-                    <div class="h-3 rounded bg-gray-300/60 dark:bg-gray-600/30 animate-pulse"></div>
-                    <div class="h-3 rounded bg-gray-300/60 dark:bg-gray-600/30 animate-pulse"></div>
-                    <div class="h-3 rounded bg-gray-300/60 dark:bg-gray-600/30 animate-pulse"></div>
+                    <div
+                      class="h-3 rounded bg-gray-300/60 dark:bg-gray-600/30 animate-pulse"
+                    ></div>
+                    <div
+                      class="h-3 rounded bg-gray-300/60 dark:bg-gray-600/30 animate-pulse"
+                    ></div>
+                    <div
+                      class="h-3 rounded bg-gray-300/60 dark:bg-gray-600/30 animate-pulse"
+                    ></div>
+                    <div
+                      class="h-3 rounded bg-gray-300/60 dark:bg-gray-600/30 animate-pulse"
+                    ></div>
+                    <div
+                      class="h-3 rounded bg-gray-300/60 dark:bg-gray-600/30 animate-pulse"
+                    ></div>
+                    <div
+                      class="h-3 rounded bg-gray-300/60 dark:bg-gray-600/30 animate-pulse"
+                    ></div>
+                    <div
+                      class="h-3 rounded bg-gray-300/60 dark:bg-gray-600/30 animate-pulse"
+                    ></div>
+                    <div
+                      class="h-3 rounded bg-gray-300/60 dark:bg-gray-600/30 animate-pulse"
+                    ></div>
                   </div>
                   <!-- code lines -->
                   <div class="flex flex-1 flex-col gap-3 pt-3">
@@ -159,21 +192,29 @@
                 <div
                   class="grid grid-cols-[6rem_105px_96px] h-[32px] overflow-clip rounded border border-gray-400/40 dark:border-gray-600/40"
                 >
-                  <div class="bg-green-600/40 dark:bg-green-700/30 animate-pulse"></div>
+                  <div
+                    class="bg-green-600/40 dark:bg-green-700/30 animate-pulse"
+                  ></div>
                   <div
                     class="border-x border-gray-400/40 dark:border-gray-600/40 bg-gray-400/20 dark:bg-gray-600/20 animate-pulse"
                   ></div>
-                  <div class="bg-gray-400/20 dark:bg-gray-600/20 animate-pulse"></div>
+                  <div
+                    class="bg-gray-400/20 dark:bg-gray-600/20 animate-pulse"
+                  ></div>
                 </div>
                 <!-- Right: Format / Clear Cache / Analysis / Examples -->
                 <div
                   class="grid grid-cols-4 w-[497px] overflow-clip rounded border border-gray-400/40 dark:border-gray-600/40"
                 >
-                  <div class="bg-gray-400/20 dark:bg-gray-600/20 animate-pulse"></div>
+                  <div
+                    class="bg-gray-400/20 dark:bg-gray-600/20 animate-pulse"
+                  ></div>
                   <div
                     class="border-x border-gray-400/40 dark:border-gray-600/40 bg-gray-400/20 dark:bg-gray-600/20 animate-pulse"
                   ></div>
-                  <div class="bg-gray-400/20 dark:bg-gray-600/20 animate-pulse"></div>
+                  <div
+                    class="bg-gray-400/20 dark:bg-gray-600/20 animate-pulse"
+                  ></div>
                   <div
                     class="border-l border-gray-400/40 dark:border-gray-600/40 bg-gray-400/20 dark:bg-gray-600/20 animate-pulse"
                   ></div>
@@ -185,6 +226,7 @@
         <div class="flex flex-row justify-between">
           <div class="relative min-w-40 h-8">
             <svg
+              aria-label="QLever logo"
               xmlns="http://www.w3.org/2000/svg"
               fill="text-green-600"
               viewBox="0 0 24 24"
@@ -211,6 +253,7 @@
             >
               <span class="inline-flex items-center gap-1">
                 <svg
+                  aria-label="Dataset icon"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -233,6 +276,7 @@
             >
               <span class="inline-flex items-center gap-1">
                 <svg
+                  aria-label="Question mark"
                   xmlns="http://www.w3.org/2000/svg"
                   fill="none"
                   viewBox="0 0 24 24"
@@ -273,7 +317,7 @@
                     d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
                   />
                 </svg>
-                <span class="hidden md:block">Settings</span>
+                <span class="hidden md:block" title="Ctrl + ,">Settings</span>
               </span>
             </div>
           </div>
@@ -283,12 +327,16 @@
           class="rounded shadow-[0_0_20px_4px_rgba(130,130,130,0.2)] dark:shadow-[0_0_20px_4px_rgba(0,0,0,0.2)] bg-neutral-100 dark:bg-[#1A1E24] mt-5 flex flex-col px-5 pb-5 pt-2"
         >
           <div class="flex flex-row justify-between items-center">
-            <div id="tabBar" class="flex items-center overflow-x-auto no-scrollbar mb-1"></div>
+            <div
+              id="tabBar"
+              class="flex items-center overflow-x-auto no-scrollbar mb-1"
+            ></div>
             <button
               id="wide-mode-switch"
+              type="button"
               class="border border-neutral-300 ms-1 active:border-green-400 hover:border-green-600 dark:border-neutral-700 text-neutral-500 hover:text-green-600 dark:text-neutral-400 flex items-center justify-center h-8 w-8 cursor-pointer rounded"
             >
-              <!-- arrows-pointing-out (expand) -->
+              <!-- horizontal arrows pointing out (expand) -->
               <svg
                 id="wide-mode-expand"
                 xmlns="http://www.w3.org/2000/svg"
@@ -301,10 +349,10 @@
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15"
+                  d="M9.75 12H2.25m0 0 3-3m-3 3 3 3M14.25 12h7.5m0 0-3-3m3 3-3 3"
                 />
               </svg>
-              <!-- arrows-pointing-in (collapse) -->
+              <!-- horizontal arrows pointing in (collapse) -->
               <svg
                 id="wide-mode-collapse"
                 xmlns="http://www.w3.org/2000/svg"
@@ -317,12 +365,15 @@
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  d="M9 9V4.5M9 9H4.5M9 9 3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5 5.25 5.25"
+                  d="M2.25 12h7.5m0 0-3-3m3 3-3 3M21.75 12h-7.5m0 0 3-3m-3 3 3 3"
                 />
               </svg>
             </button>
           </div>
-          <div id="editorArea" class="h-[34em] min-h-0 mb-5 flex gap-2 resize-y overflow-hidden">
+          <div
+            id="editorArea"
+            class="h-[34em] min-h-0 mb-5 flex gap-2 resize-y overflow-hidden"
+          >
             <div id="editor" class="h-full flex-1 min-h-0"></div>
             <div
               id="parseTreePanel"
@@ -333,7 +384,9 @@
               >
                 <span>Parse Tree</span>
                 <div class="flex items-center gap-3">
-                  <label class="flex items-center gap-1 font-normal cursor-pointer">
+                  <label
+                    class="flex items-center gap-1 font-normal cursor-pointer"
+                  >
                     <input
                       type="checkbox"
                       id="parseTreeShowSpan"
@@ -342,7 +395,9 @@
                     />
                     Show span
                   </label>
-                  <label class="flex items-center gap-1 font-normal cursor-pointer">
+                  <label
+                    class="flex items-center gap-1 font-normal cursor-pointer"
+                  >
                     <input
                       type="checkbox"
                       id="parseTreeShowTrivia"
@@ -352,16 +407,26 @@
                     Show Trivia
                   </label>
                   <button
+                    type="button"
                     id="parseTreeCopy"
                     class="hover:text-blue-500 cursor-pointer text-lg"
                     title="Copy to clipboard"
                   >
                     ⧉
                   </button>
-                  <button id="parseTreeClose" class="hover:text-red-500 cursor-pointer">✕</button>
+                  <button
+                    type="button"
+                    id="parseTreeClose"
+                    class="hover:text-red-500 cursor-pointer"
+                  >
+                    ✕
+                  </button>
                 </div>
               </div>
-              <div id="parseTreeContent" class="flex-1 overflow-auto p-2 font-mono text-xs"></div>
+              <div
+                id="parseTreeContent"
+                class="flex-1 overflow-auto p-2 font-mono text-xs"
+              ></div>
             </div>
             <div
               id="templatePanel"
@@ -373,13 +438,18 @@
                 <span>Completion Templates</span>
                 <div class="flex items-center gap-2">
                   <button
+                    type="button"
                     id="templatePanelSave"
                     class="hover:text-green-600 cursor-pointer"
                     title="Save to database"
                   >
                     Save
                   </button>
-                  <button id="templatePanelClose" class="hover:text-red-500 cursor-pointer">
+                  <button
+                    type="button"
+                    id="templatePanelClose"
+                    class="hover:text-red-500 cursor-pointer"
+                  >
                     ✕
                   </button>
                 </div>
@@ -388,7 +458,10 @@
                 id="templateSelector"
                 class="flex flex-wrap gap-1 px-2 py-2 border-b border-gray-300 dark:border-gray-600 text-xs"
               ></div>
-              <div id="templateEditorContainer" class="flex-1 min-h-0 overflow-hidden"></div>
+              <div
+                id="templateEditorContainer"
+                class="flex-1 min-h-0 overflow-hidden"
+              ></div>
             </div>
           </div>
           <div class="flex flex-col lg:flex-row gap-2 justify-between">
@@ -400,7 +473,10 @@
                   id="executeButton"
                   class="bg-green-600 active:bg-green-800 hover:bg-green-700 cursor-pointer flex justify-center px-2 py-1"
                 >
-                  <span class="inline-flex items-center gap-1 text-gray-100">
+                  <span
+                    class="inline-flex items-center gap-1 text-gray-100"
+                    title="Ctrl + Enter"
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="white"
@@ -432,10 +508,26 @@
                         gradientTransform="scale(1.5)"
                       >
                         <stop offset="0" stop-color="#45FF56"></stop>
-                        <stop offset=".3" stop-color="#45FF56" stop-opacity=".9"></stop>
-                        <stop offset=".6" stop-color="#45FF56" stop-opacity=".6"></stop>
-                        <stop offset=".8" stop-color="#45FF56" stop-opacity=".3"></stop>
-                        <stop offset="1" stop-color="#45FF56" stop-opacity="0"></stop>
+                        <stop
+                          offset=".3"
+                          stop-color="#45FF56"
+                          stop-opacity=".9"
+                        ></stop>
+                        <stop
+                          offset=".6"
+                          stop-color="#45FF56"
+                          stop-opacity=".6"
+                        ></stop>
+                        <stop
+                          offset=".8"
+                          stop-color="#45FF56"
+                          stop-opacity=".3"
+                        ></stop>
+                        <stop
+                          offset="1"
+                          stop-color="#45FF56"
+                          stop-opacity="0"
+                        ></stop>
                       </radialGradient>
                       <circle
                         transform-origin="center"
@@ -488,15 +580,20 @@
                     </svg>
                     Cancel
                   </span>
-                  <span class="hidden items-center gap-1 text-gray-100"> Cancel </span>
+                  <span class="hidden items-center gap-1 text-gray-100">
+                    Cancel
+                  </span>
                 </div>
                 <div
                   class="border-button-border bg-slate-100 dark:bg-slate-700 flex items-stretch justify-center border-x"
                 >
                   <button
+                    type="button"
                     id="downloadButton"
-                    title="Download results (TSV)"
-                    class="bg-slate-100 dark:bg-slate-700 active:bg-slate-400 dark:active:bg-gray-950 hover:bg-button-hover flex cursor-pointer items-center gap-1 py-1 pr-1 pl-2"
+                    title="Download results"
+                    aria-haspopup="menu"
+                    aria-expanded="false"
+                    class="bg-slate-100 dark:bg-slate-700 active:bg-slate-400 dark:active:bg-gray-950 hover:bg-button-hover flex cursor-pointer items-center gap-1 px-2 py-1"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -513,21 +610,13 @@
                       />
                     </svg>
                     Download
-                  </button>
-                  <button
-                    id="downloadFormatButton"
-                    title="Choose download format"
-                    aria-haspopup="menu"
-                    aria-expanded="false"
-                    class="bg-slate-100 dark:bg-slate-700 active:bg-slate-400 dark:active:bg-gray-950 hover:bg-button-hover flex cursor-pointer items-center py-1 pr-2 pl-0.5 text-gray-500 dark:text-gray-400"
-                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke-width="2.5"
                       stroke="currentColor"
-                      class="size-3"
+                      class="size-3 text-gray-500 dark:text-gray-400"
                     >
                       <path
                         stroke-linecap="round"
@@ -538,6 +627,7 @@
                   </button>
                 </div>
                 <button
+                  type="button"
                   id="shareButton"
                   class="bg-slate-100 dark:bg-slate-700 active:bg-slate-400 dark:active:bg-gray-950 hover:bg-button-hover flex justify-center px-2 py-1 cursor-pointer"
                 >
@@ -569,7 +659,7 @@
                   id="formatButton"
                   class="border-button-border bg-slate-100 dark:bg-slate-700 active:bg-slate-400 dark:active:bg-gray-950 hover:bg-button-hover flex cursor-pointer justify-center py-1"
                 >
-                  <span class="inline-flex items-center gap-1">
+                  <span class="inline-flex items-center gap-1" title="Ctrl + f">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -668,16 +758,19 @@
           class="rounded bg-red-500/70 dark:bg-red-700/30 border-red-300 dark:border-red-900 border my-5 p-5 hidden"
         >
           <div class="flex flex-col items-center">
-            <h1 class="text-center text-xl text-neutral-200 dark:text-red-700 font-bold">
+            <h1
+              id="queryErrorTitle"
+              class="text-center text-xl text-neutral-200 dark:text-red-700 font-bold"
+            >
               Error processing query
             </h1>
             <span
-              id="resultErrorMessage"
+              id="queryErrorSubtitle"
               class="text-neutral-200 dark:text-red-400 font-bold mt-3"
             ></span>
             <div class="w-full">
               <pre
-                id="resultsErrorQuery"
+                id="queryErrorQuery"
                 class="rounded bg-neutral-400 mt-4 mx-auto p-2 text-black"
               ></pre>
             </div>
@@ -749,8 +842,14 @@
             </div>
           </div>
           <div id="resultsTableContainer" class="hidden">
-            <div id="resultsHeader" class="flex flex-row flex-wrap gap-2 justify-between w-full">
-              <div id="resultsStats" class="rounded border flex flex-row flex-wrap text-gray-500">
+            <div
+              id="resultsHeader"
+              class="flex flex-row flex-wrap gap-2 justify-between w-full"
+            >
+              <div
+                id="resultsStats"
+                class="rounded border flex flex-row flex-wrap text-gray-500"
+              >
                 <div class="border-r py-1 px-2">
                   <span class="flex items-center">
                     <svg
@@ -771,7 +870,10 @@
                     results
                   </span>
                 </div>
-                <div id="queryTimeComputeContainer" class="border-r py-1 px-2 hidden">
+                <div
+                  id="queryTimeComputeContainer"
+                  class="border-r py-1 px-2 hidden"
+                >
                   <span class="flex flex-row items-center">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -834,7 +936,9 @@
                         d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
                       />
                     </svg>
-                    <span id="queryTimeTotal" class="mx-1 normal-nums"> 0 </span>
+                    <span id="queryTimeTotal" class="mx-1 normal-nums">
+                      0
+                    </span>
                     in total
                     <div class="relative group cursor-pointer ms-2">
                       <svg
@@ -855,7 +959,8 @@
                         class="pointer-events-none absolute left-1/2 -translate-x-1/2 top-full mt-3 whitespace-nowrap rounded bg-green-200/20 dark:bg-green-400/20 backdrop-blur-md border border-green-300 text-black dark:text-white text-sm px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity duration-150"
                       >
                         This is the end-to-end time.<br />
-                        It includes the time spend sending and reading the result.
+                        It includes the time spend sending and reading the
+                        result.
                         <span
                           class="absolute left-1/2 -translate-x-1/2 -top-1 w-2 h-2 bg-green-200 rotate-45"
                         >
@@ -889,7 +994,7 @@
                 </button>
                 <a
                   id="mapViewButton"
-                  href="#"
+                  href="https://qlever.dev/petrimaps/"
                   target="_blank"
                   class="border border-button-border rounded flex items-center gap-1 px-2 cursor-pointer hover bg-slate-100 dark:bg-slate-700 active:bg-slate-400 dark:active:bg-gray-950 hover:bg-button-hover hidden"
                 >
@@ -916,36 +1021,52 @@
                 </a>
               </div>
             </div>
+            <sparql-results></sparql-results>
             <div class="overflow-x-auto mt-10">
-              <table id="resultsTable" class="table-auto w-max min-w-full"></table>
+              <table
+                id="resultsTable"
+                class="table-auto w-max min-w-full"
+              ></table>
             </div>
             <div
               id="resultReloadingAnimation"
               class="flex flex-col gap-1 justify-center h-20 items-center hidden"
             >
               <div class="flex gap-0.5 h-10 items-center">
-                <div class="bg-green-600 h-[50%] w-4 rounded animate-grow-shrink"></div>
+                <div
+                  class="bg-green-600 h-[50%] w-4 rounded animate-grow-shrink"
+                ></div>
                 <div
                   class="bg-green-600 h-[50%] w-4 rounded animate-grow-shrink [animation-delay:1.2s]"
                 ></div>
-                <div class="bg-green-600 h-[50%] w-4 rounded animate-grow-shrink"></div>
+                <div
+                  class="bg-green-600 h-[50%] w-4 rounded animate-grow-shrink"
+                ></div>
                 <div
                   class="bg-green-600 h-[50%] w-4 rounded animate-grow-shrink [animation-delay:1.2s]"
                 ></div>
-                <div class="bg-green-600 h-[50%] w-4 rounded animate-grow-shrink"></div>
+                <div
+                  class="bg-green-600 h-[50%] w-4 rounded animate-grow-shrink"
+                ></div>
               </div>
-              <span class="text-green-600 dark:text-green-500"> loading more results... </span>
+              <span class="text-green-600 dark:text-green-500">
+                loading more results...
+              </span>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <footer class="border-t border-gray-200 dark:border-gray-700 mt-8 pt-5 pb-4 px-4">
+    <footer
+      class="border-t border-gray-200 dark:border-gray-700 mt-8 pt-5 pb-4 px-4"
+    >
       <div class="max-w-4xl mx-auto">
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
           <!-- Documentation -->
           <div>
-            <h3 class="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1.5">
+            <h3
+              class="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1.5"
+            >
               Documentation
             </h3>
             <ul class="space-y-1 text-sm">
@@ -974,7 +1095,9 @@
           </div>
           <!-- Source Code -->
           <div>
-            <h3 class="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1.5">
+            <h3
+              class="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1.5"
+            >
               Source Code
             </h3>
             <ul class="space-y-1 text-sm">
@@ -1017,7 +1140,11 @@
           </div>
           <!-- Tools -->
           <div>
-            <h3 class="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1.5">Tools</h3>
+            <h3
+              class="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1.5"
+            >
+              Tools
+            </h3>
             <ul class="space-y-1 text-sm">
               <li>
                 <a
@@ -1044,7 +1171,9 @@
           </div>
           <!-- Publications -->
           <div>
-            <h3 class="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1.5">
+            <h3
+              class="text-sm font-semibold text-gray-600 dark:text-gray-300 mb-1.5"
+            >
               Publications
             </h3>
             <ul class="space-y-1 text-sm">
@@ -1081,7 +1210,8 @@
             <a
               href="https://ad.cs.uni-freiburg.de/"
               class="hover:text-sky-600 dark:hover:text-sky-400"
-              >Chair for Algorithms and Data Structures, University of Freiburg</a
+              >Chair for Algorithms and Data Structures, University of
+              Freiburg</a
             >
           </span>
         </div>
@@ -1138,7 +1268,10 @@
               />
             </svg>
           </div>
-          <div id="queryExecutionTreeModalCloseButton" class="hover:text-red-400 cursor-pointer">
+          <div
+            id="queryExecutionTreeModalCloseButton"
+            class="hover:text-red-400 cursor-pointer"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
@@ -1147,7 +1280,11 @@
               stroke="currentColor"
               class="size-7"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18 18 6M6 6l12 12"
+              />
             </svg>
           </div>
         </div>
@@ -1160,7 +1297,9 @@
         <div
           class="flex items-center justify-between px-4 py-3 border-b border-gray-200 dark:border-gray-700"
         >
-          <h3 class="text-base font-bold text-gray-900 dark:text-neutral-200">Node Details</h3>
+          <h3 class="text-base font-bold text-gray-900 dark:text-neutral-200">
+            Node Details
+          </h3>
           <div
             id="queryExecutionTreeDetailsCloseButton"
             class="text-gray-500 hover:text-red-400 cursor-pointer"
@@ -1173,7 +1312,11 @@
               stroke="currentColor"
               class="size-5"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="M6 18 18 6M6 6l12 12"
+              />
             </svg>
           </div>
         </div>
@@ -1273,7 +1416,9 @@
         id="share"
         class="border rounded-lg z-30 border-neutral-400 dark:border-neutral-600 shadow bg-neutral-200/60 text-neutral-600 dark:text-neutral-300 dark:bg-neutral-500/60 w-4/5 sm:w-3/4 lg:w-4/5 xl:w-4/7 h-2/3 flex flex-col gap-3 p-5 overflow-auto"
       >
-        <div class="border-b border-neutral-400 dark:border-neutral-600 pb-3 mb-3">
+        <div
+          class="border-b border-neutral-400 dark:border-neutral-600 pb-3 mb-3"
+        >
           <h2 class="text-center text-lg font-bold">Share your query</h2>
         </div>
         <div class="w-full">
@@ -1312,7 +1457,8 @@
         </div>
         <div>
           <h4 class="text-md font-bold">
-            URL to this query in the QLever UI (short, with query hash, execute automatically)
+            URL to this query in the QLever UI (short, with query hash, execute
+            automatically)
           </h4>
           <div
             class="bg-neutral-300 dark:bg-neutral-800 rounded p-1 w-full flex justify-between items-center"
@@ -1379,7 +1525,9 @@
           </div>
         </div>
         <div>
-          <h4 class="text-md font-bold">URL for GET request (for use in web apps, etc.)</h4>
+          <h4 class="text-md font-bold">
+            URL for GET request (for use in web apps, etc.)
+          </h4>
           <div
             class="bg-neutral-300 dark:bg-neutral-800 rounded p-1 w-full flex justify-between items-center"
           >
@@ -1412,7 +1560,8 @@
         </div>
         <div>
           <h4 class="text-md font-bold">
-            cURL command line for POST request (application/sparql-results+json):
+            cURL command line for POST request
+            (application/sparql-results+json):
           </h4>
           <div
             class="bg-neutral-300 dark:bg-neutral-800 rounded p-1 w-full flex justify-between items-center"
@@ -1479,7 +1628,9 @@
           </div>
         </div>
         <div>
-          <h4 class="text-md font-bold">Unescaped query string (in one line):</h4>
+          <h4 class="text-md font-bold">
+            Unescaped query string (in one line):
+          </h4>
           <div
             class="bg-neutral-300 dark:bg-neutral-800 rounded p-1 w-full flex justify-between items-center"
           >
@@ -1519,10 +1670,10 @@
     >
       <div class="h-4/5 w-full flex flex-col items-center justify-top">
         <div
+          id="datasetInformationContainer"
           class="border rounded-lg z-30 border-neutral-400 dark:border-neutral-600 shadow bg-neutral-200/60 dark:bg-neutral-500/60 text-neutral-500 dark:text-neutral-300 w-4/5 md:w-3/4 xl:w-1/2 flex flex-col p-5"
         >
           <div
-            id="datasetInformation"
             class="w-full pb-5 border-b border-neutral-400 dark:border-neutral-700 flex justify-center text-lg font-bold"
           >
             Dataset Information
@@ -1564,7 +1715,9 @@
         >
           Help
         </div>
-        <div class="w-full py-3 mt-4 flex justify-center text-md font-bold">Shortcuts</div>
+        <div class="w-full py-3 mt-4 flex justify-center text-md font-bold">
+          Shortcuts
+        </div>
         <div class="text-sm flex flex-col gap-1">
           <span>
             Press
@@ -1685,12 +1838,18 @@
         >
           Settings
         </div>
-        <div class="mt-5 mx-2 md:mx-5 flex flex-col justify-center text-md font-bold">
+        <div
+          class="mt-5 mx-2 md:mx-5 flex flex-col justify-center text-md font-bold"
+        >
           <span class="text-md text-center">General</span>
-          <div class="w-full my-3 border-b border-neutral-400 dark:border-neutral-200"></div>
+          <div
+            class="w-full my-3 border-b border-neutral-400 dark:border-neutral-200"
+          ></div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
             <div class="flex items-center gap-2">
-              <label for="accessToken" class="font-bold whitespace-nowrap">Access Token</label>
+              <label for="accessToken" class="font-bold whitespace-nowrap"
+                >Access Token</label
+              >
               <input
                 id="settings-general-accessToken"
                 class="border rounded text-md p-1 grow min-w-0"
@@ -1699,27 +1858,24 @@
                 value=""
               />
             </div>
-            <div class="flex gap-2 items-center">
-              <label for="uiMode" class="font-bold whitespace-nowrap">UI mode</label>
-              <select
-                name="uiMode"
-                id="settings-general-uiMode"
-                class="border rounded p-2 text-md grow min-w-0"
-              >
-                <option value="results">Show results</option>
-                <option value="compare">Compare Engines</option>
-              </select>
-            </div>
           </div>
         </div>
         <div class="grid grid-cols-1 lg:grid-cols-3">
-          <div class="lg:col-span-2 mt-5 mx-2 md:mx-5 flex flex-col text-md font-bold">
+          <div
+            class="lg:col-span-2 mt-5 mx-2 md:mx-5 flex flex-col text-md font-bold"
+          >
             <span class="text-md text-center">Editor</span>
-            <div class="w-full my-3 border-b border-neutral-400 dark:border-neutral-200"></div>
+            <div
+              class="w-full my-3 border-b border-neutral-400 dark:border-neutral-200"
+            ></div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
-              <div class="flex flex-col items-center text-md font-bold mx-1 md:mx-3">
+              <div
+                class="flex flex-col items-center text-md font-bold mx-1 md:mx-3"
+              >
                 <span class="text-md text-center">Formatting</span>
-                <div class="w-full my-3 border-b border-neutral-400 dark:border-neutral-200"></div>
+                <div
+                  class="w-full my-3 border-b border-neutral-400 dark:border-neutral-200"
+                ></div>
 
                 <div class="flex flex-col gap-2 items-start w-min">
                   <label class="inline-flex items-center cursor-pointer">
@@ -1909,7 +2065,9 @@
                 </div>
               </div>
               <div>
-                <div class="flex flex-col items-center text-md font-bold mx-1 md:mx-3">
+                <div
+                  class="flex flex-col items-center text-md font-bold mx-1 md:mx-3"
+                >
                   <span class="text-md text-center">Completion</span>
                   <div
                     class="w-full my-3 border-b border-neutral-400 dark:border-neutral-200"
@@ -2008,7 +2166,9 @@
                     </label>
                   </div>
                 </div>
-                <div class="flex flex-col items-center text-md font-bold mt-3 mx-1 md:mx-3">
+                <div
+                  class="flex flex-col items-center text-md font-bold mt-3 mx-1 md:mx-3"
+                >
                   <span class="text-md text-center">Miscellaneous</span>
                   <div
                     class="w-full my-3 border-b border-neutral-400 dark:border-neutral-200"
@@ -2046,7 +2206,12 @@
                       >
                     </label>
                     <label class="items-center cursor-pointer hidden">
-                      <input id="vimMode" type="checkbox" value="" class="sr-only peer" />
+                      <input
+                        id="vimMode"
+                        type="checkbox"
+                        value=""
+                        class="sr-only peer"
+                      />
                       <div
                         class="relative w-9 h-5 bg-neutral-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"
                       ></div>
@@ -2090,9 +2255,13 @@
               </div>
             </div>
           </div>
-          <div class="mt-5 mx-2 md:mx-5 flex flex-col items-center text-md font-bold">
+          <div
+            class="mt-5 mx-2 md:mx-5 flex flex-col items-center text-md font-bold"
+          >
             <span class="text-md text-center">Results</span>
-            <div class="w-full my-3 border-b border-neutral-400 dark:border-neutral-200"></div>
+            <div
+              class="w-full my-3 border-b border-neutral-400 dark:border-neutral-200"
+            ></div>
 
             <div class="flex flex-col gap-2 w-min">
               <label class="inline-flex items-center cursor-pointer">
@@ -2105,7 +2274,8 @@
                 <div
                   class="relative w-9 h-5 bg-neutral-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"
                 ></div>
-                <span class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
+                <span
+                  class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
                   >Type annotations</span
                 >
               </label>
@@ -2119,7 +2289,8 @@
                 <div
                   class="relative w-9 h-5 bg-neutral-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"
                 ></div>
-                <span class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
+                <span
+                  class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
                   >Language annotations</span
                 >
               </label>
@@ -2133,7 +2304,8 @@
                 <div
                   class="relative w-9 h-5 bg-neutral-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"
                 ></div>
-                <span class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
+                <span
+                  class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
                   >Load images</span
                 >
               </label>
@@ -2147,7 +2319,8 @@
                 <div
                   class="relative w-9 h-5 bg-neutral-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"
                 ></div>
-                <span class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
+                <span
+                  class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
                   >Shorten IRIs</span
                 >
               </label>
@@ -2162,7 +2335,8 @@
                   placeholder="2"
                   required
                 />
-                <span class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
+                <span
+                  class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
                   >Limit</span
                 >
               </label>
@@ -2193,7 +2367,11 @@
               stroke="currentColor"
               class="absolute top-1/4 left-0 size-5 font-bold stroke-2"
             >
-              <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                d="m8.25 4.5 7.5 7.5-7.5 7.5"
+              />
             </svg>
           </div>
         </div>

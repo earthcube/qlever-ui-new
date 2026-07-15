@@ -4,7 +4,7 @@ import { SparqlEngine } from '../types/lsp_messages';
 
 export async function setupDatasetInformation(editor: Editor) {
   const datasetInformationModal = document.getElementById('datasetInformationModal')!;
-  const datasetInformation = document.getElementById('datasetInformation')!;
+  const datasetInformationContainer = document.getElementById('datasetInformationContainer')!;
   const datasetInformationButton = document.getElementById('datasetInformationButton')!;
 
   datasetInformationButton.addEventListener('click', async () => {
@@ -15,7 +15,7 @@ export async function setupDatasetInformation(editor: Editor) {
     closeDatasetInformation();
   });
 
-  datasetInformation.firstElementChild?.addEventListener('click', (e) => {
+  datasetInformationContainer.addEventListener('click', (e) => {
     e.stopPropagation();
   });
 }
@@ -45,7 +45,7 @@ async function loadDatasetInformation(editor: Editor): Promise<void> {
     throw new Error('No backend was configured.');
   }
 
-  if (service.engine != SparqlEngine.QLever) {
+  if (service.engine !== SparqlEngine.QLever) {
     throw new Error('Dataset information is only availiable for QLever-based Backends.');
   }
   fetch(`${service.url}?cmd=stats`)

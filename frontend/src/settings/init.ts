@@ -1,11 +1,10 @@
 import type { Editor } from '../editor/init';
 import type { UiSettings } from '../types/settings';
-import { getInputByPath, handleClickEvents, setByPath, walk } from './utils';
+import { getInputByPath, handleClickEvents, hasPath, setByPath, walk } from './utils';
 
-export let settings: UiSettings = {
+export const settings: UiSettings = {
   general: {
     accessToken: '',
-    uiMode: 'results',
   },
   editor: {
     format: {
@@ -75,7 +74,7 @@ function updateDom() {
           input.checked = value;
           break;
         default:
-          input.value = value === null ? '' : value;
+          input.value = value === null ? '' : String(value);
           break;
       }
     },
@@ -84,7 +83,7 @@ function updateDom() {
 }
 
 function handleInput(editor: Editor) {
-  const stringFields = ['accessToken', 'uiMode'];
+  const stringFields = ['accessToken'];
   const nullableFields = ['compact', 'variableCompletionLimit'];
   walk(
     settings,
@@ -109,7 +108,7 @@ function handleInput(editor: Editor) {
             } else if (stringFields.includes(fieldName)) {
               newValue = input.value;
             } else {
-              newValue = parseInt(input.value);
+              newValue = parseInt(input.value, 10);
             }
             setByPath(settings, path, newValue);
             saveToLocalStorage();
@@ -143,7 +142,11 @@ function loadFromLocalStorage() {
   if (storedQlueLsSettings) {
     const newSettings = JSON.parse(storedQlueLsSettings);
     walk(newSettings, (path, value) => {
-      setByPath(settings, path, value);
+      // Ignore stored keys that no longer exist (e.g. removed settings),
+      // otherwise updateDom would look up a missing DOM input and crash.
+      if (hasPath(settings, path)) {
+        setByPath(settings, path, value);
+      }
     });
   }
 }
