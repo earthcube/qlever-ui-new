@@ -31,7 +31,6 @@ import { setupInfiniteScroll } from './infinite_scroll';
 import { clearTable, renderTableHeader, renderTableRows } from './table';
 import {
   clearQueryStats,
-  hideFullResultButton,
   type QueryStatus,
   scrollToResults,
   showLoadingScreen,
@@ -125,7 +124,6 @@ async function executeQueryAndShowResults(editor: Editor) {
 
   showLoadingScreen();
   clearQueryStats();
-  hideFullResultButton();
   element.clear();
   clearTable();
 
@@ -153,15 +151,19 @@ async function executeQueryAndShowResults(editor: Editor) {
       if ('updateResult' in result) {
         renderUpdateResult(result.updateResult);
       } else if ('queryResult' in result) {
-        showResultsSize(result.queryResult.result.results.bindings.length);
-        switch (renderConfig.type) {
-          case 'lineplot':
-            element.render_results(result.queryResult.result, renderConfig);
-            break;
-          case 'table':
-            break;
-          default:
-            break;
+        if ('boolean' in result.queryResult.result) {
+          renderAskResult(result.queryResult.result.boolean);
+        } else {
+          showResultsSize(result.queryResult.result.results.bindings.length);
+          switch (renderConfig.type) {
+            case 'lineplot':
+              element.render_results(result.queryResult.result, renderConfig);
+              break;
+            case 'table':
+              break;
+            default:
+              break;
+          }
         }
       }
       setTimeout(scrollToResults, 100);
@@ -237,6 +239,12 @@ function extractRenderConfig(query: string): RenderConfig {
     };
     return fallbackConfig;
   }
+}
+
+function renderAskResult(result: boolean) {
+  const resultElement = document.getElementById('askResult')! as HTMLElement;
+  resultElement.classList.remove('hidden');
+  resultElement.dataset.state = `${result}`;
 }
 
 function renderUpdateResult(result: ExecuteUpdateResult) {

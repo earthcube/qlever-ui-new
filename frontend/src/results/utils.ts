@@ -1,9 +1,9 @@
 import * as d3 from 'd3';
+import type { PetrimapsRenderConfig } from 'sparql-results';
 import type { Editor } from '../editor/init';
 import type { QlueLsServiceConfig } from '../types/backend';
 import type { Head, Meta } from '../types/lsp_messages';
 import type { Binding } from '../types/rdf';
-import type { PetrimapsRenderConfig } from 'sparql-results';
 
 export function clearQueryStats() {
   document.getElementById('resultSize')!.innerText = '?';
@@ -31,11 +31,13 @@ export function showResultsSize(size: number) {
 export function hideLoadingAnimation() {
   const resultReloadingAnimation = document.getElementById('resultReloadingAnimation')!;
   resultReloadingAnimation.classList.add('hidden');
+  resultReloadingAnimation.classList.remove('flex');
 }
 
 export function showLoadingAnimation() {
   const resultReloadingAnimation = document.getElementById('resultReloadingAnimation')!;
   resultReloadingAnimation.classList.remove('hidden');
+  resultReloadingAnimation.classList.add('flex');
 }
 
 export function showLoadingScreen() {
@@ -45,6 +47,8 @@ export function showLoadingScreen() {
   ) as HTMLSelectElement;
   const resultsLoadingScreen = document.getElementById('resultsLoadingScreen') as HTMLSelectElement;
   const resultsError = document.getElementById('resultsError') as HTMLSelectElement;
+  const askResult = document.getElementById('askResult') as HTMLElement;
+  askResult.classList.add('hidden');
   resultsTableContainer.classList.add('hidden');
   resultsContainer.classList.remove('hidden');
   resultsLoadingScreen.classList.remove('hidden');
@@ -149,6 +153,7 @@ export async function showMapViewButton(
     )) as QlueLsServiceConfig;
     const mapViewBaseUrl = backend.additionalData.mapViewUrl ?? 'https://qlever.dev/petrimaps/';
     mapViewButton?.classList.remove('hidden');
+    mapViewButton?.classList.add('flex');
     const query: string = editor.getContent();
 
     const params = new URLSearchParams({
@@ -162,6 +167,7 @@ export async function showMapViewButton(
     return;
   }
   mapViewButton?.classList.add('hidden');
+  mapViewButton?.classList.remove('flex');
 }
 
 function lastBindingIsWKTliteral(head: Head, bindings: Binding[]): boolean {
@@ -175,16 +181,6 @@ function lastBindingIsWKTliteral(head: Head, bindings: Binding[]): boolean {
     );
   }
   return false;
-}
-
-export function showFullResultButton() {
-  const fullResultButton = document.getElementById('fullResultButton') as HTMLButtonElement;
-  fullResultButton.classList.remove('hidden');
-}
-
-export function hideFullResultButton() {
-  const fullResultButton = document.getElementById('fullResultButton') as HTMLButtonElement;
-  fullResultButton.classList.add('hidden');
 }
 
 export type QueryStatus = 'idle' | 'running' | 'canceling';

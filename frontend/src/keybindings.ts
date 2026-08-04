@@ -3,7 +3,7 @@ import { closeHelp, openHelp } from './buttons/help';
 import { closeCommandPrompt, openCommandPrompt } from './commands/utils';
 import { closeExamples } from './examples/utils';
 import { closeSettings, openSettings } from './settings/utils';
-import { closeShare } from './share';
+import { closeShare } from './share/ui';
 
 type Shortcut = {
   ctrl?: boolean; // true if Ctrl must be pressed
@@ -29,7 +29,6 @@ export function setupKeybindings() {
     openHelp();
   });
   registerShortcut({ shift: true, key: '?' }, () => {
-    console.log('open help');
     closeAllModals();
     openHelp();
   });
@@ -41,7 +40,7 @@ export function setupKeybindings() {
     closeAllModals();
     window.dispatchEvent(new Event('cancel-or-execute'));
   });
-  registerShortcut({ key: 'Escape' }, () => closeAllModals());
+  // NOTE: Escape is handled natively by the <dialog> elements
   registerShortcut({ shift: true, key: ':' }, () => openCommandPrompt());
   registerShortcut({ ctrl: true, key: 'p' }, () => openCommandPrompt());
 }

@@ -1,18 +1,17 @@
+import { closeDialog, openDialog, setupDialog } from '../dialogs';
+
 export function setupHelp() {
   const helpButton = document.getElementById('helpButton')!;
-  const helpModal = document.getElementById('helpModal')!;
   const helpContainer = document.getElementById('helpContainer')!;
 
-  helpModal.addEventListener('click', () => {
-    closeHelp();
-  });
+  setupDialog('helpModal');
 
   helpButton.addEventListener('click', () => {
     openHelp();
   });
 
-  helpContainer.addEventListener('click', (e) => {
-    e.stopPropagation();
+  document.getElementById('helpClose')!.addEventListener('click', () => {
+    closeHelp();
   });
 
   if (detectOS() === 'mac') {
@@ -23,13 +22,11 @@ export function setupHelp() {
 }
 
 export function openHelp() {
-  const helpModal = document.getElementById('helpModal')!;
-  helpModal.classList.remove('hidden');
+  openDialog('helpModal');
 }
 
 export function closeHelp() {
-  const helpModal = document.getElementById('helpModal')!;
-  helpModal.classList.add('hidden');
+  closeDialog('helpModal');
 }
 
 function detectOS() {

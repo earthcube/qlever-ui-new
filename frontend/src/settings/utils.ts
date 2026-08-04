@@ -1,32 +1,66 @@
+import { closeDialog, openDialog, setupDialog } from '../dialogs';
+
 export function handleClickEvents() {
   const settingsButton = document.getElementById('settingsButton')!;
-  const settingsModal = document.getElementById('settingsModal')!;
-  const settingsContainer = document.getElementById('settingsContainer')!;
 
-  settingsModal.addEventListener('click', () => {
-    closeSettings();
-  });
+  setupDialog('settingsModal');
 
   settingsButton.addEventListener('click', () => {
     openSettings();
   });
 
-  settingsContainer.addEventListener('click', (e) => {
-    e.stopPropagation();
+  document.getElementById('settingsClose')!.addEventListener('click', () => {
+    closeSettings();
   });
+
+  handleTabEvents();
+  handlePasswordToggles();
+}
+
+/**
+ * Wires the eye buttons next to password inputs: each toggles the input's type
+ * and swaps the show/hide icon.
+ */
+function handlePasswordToggles() {
+  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-password-toggle]')) {
+    const input = button.parentElement!.querySelector<HTMLInputElement>('input')!;
+    button.addEventListener('click', () => {
+      const reveal = input.type === 'password';
+      input.type = reveal ? 'text' : 'password';
+      button.title = reveal ? 'Hide token' : 'Show token in clear text';
+      button.querySelector('[data-password-icon="show"]')!.classList.toggle('hidden', reveal);
+      button.querySelector('[data-password-icon="hide"]')!.classList.toggle('hidden', !reveal);
+    });
+  }
+}
+
+/**
+ * Wires the settings rail: every button carries `data-settings-tab` holding the
+ * id of the panel it reveals.
+ */
+function handleTabEvents() {
+  const tabs = [...document.querySelectorAll<HTMLButtonElement>('[data-settings-tab]')];
+
+  for (const tab of tabs) {
+    tab.addEventListener('click', () => {
+      for (const other of tabs) {
+        const active = other === tab;
+        other.dataset.state = active ? 'active' : 'inactive';
+        document.getElementById(other.dataset.settingsTab!)!.classList.toggle('hidden', !active);
+      }
+    });
+  }
 }
 
 export function openSettings() {
-  const settingsModal = document.getElementById('settingsModal')!;
-  settingsModal.classList.remove('hidden');
+  openDialog('settingsModal');
   // NOTE: remove focus from monaco editor
   document.getElementById('settings-general-accessToken')!.focus();
   document.getElementById('settings-general-accessToken')!.blur();
 }
 
 export function closeSettings() {
-  const settingsModal = document.getElementById('settingsModal')!;
-  settingsModal.classList.add('hidden');
+  closeDialog('settingsModal');
 }
 
 export function walk(

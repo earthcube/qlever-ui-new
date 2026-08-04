@@ -86,7 +86,7 @@
       </div>
       <div
         id="mainContainer"
-        class="w-full lg:w-9/10 xl:w-[72rem] mt-20 mx-auto relative"
+        class="w-full lg:w-9/10 xl:w-6xl mt-20 mx-auto relative"
       >
         <div
           id="loadingScreen"
@@ -94,7 +94,7 @@
         >
           <div class="flex w-full h-full flex-col">
             <!-- Top toolbar row (outside card) -->
-            <div class="flex flex-row justify-between h-[30px]">
+            <div class="flex flex-row justify-between h-7.5">
               <div
                 class="w-40 h-full rounded border border-gray-400/40 dark:border-gray-600/40 bg-gray-400/30 dark:bg-gray-600/30 animate-pulse"
               ></div>
@@ -112,12 +112,12 @@
             </div>
             <!-- Editor container card -->
             <div
-              class="mt-[22px] flex flex-1 flex-col rounded bg-neutral-100 dark:bg-[#1A1E24] px-5 pb-[20px] pt-2"
+              class="mt-5.5 flex flex-1 flex-col rounded bg-neutral-100 dark:bg-[#1A1E24] px-5 pb-5 pt-2"
             >
               <!-- tab bar -->
-              <div class="flex items-center mb-[4px] gap-0.5">
+              <div class="flex items-center mb-1 gap-0.5">
                 <div
-                  class="h-[34px] w-40 rounded-t bg-gray-400/30 dark:bg-gray-600/30 border-b-2 border-b-green-600 animate-pulse"
+                  class="h-8.5 w-40 rounded-t bg-gray-400/30 dark:bg-gray-600/30 border-b-2 border-b-green-600 animate-pulse"
                 ></div>
                 <div
                   class="h-5 w-5 rounded bg-gray-400/20 dark:bg-gray-600/20 animate-pulse"
@@ -190,7 +190,7 @@
               <div class="flex flex-col gap-2 lg:flex-row lg:justify-between">
                 <!-- Left: Execute / Download / Share -->
                 <div
-                  class="grid grid-cols-[6rem_105px_96px] h-[32px] overflow-clip rounded border border-gray-400/40 dark:border-gray-600/40"
+                  class="grid grid-cols-[6rem_105px_96px] h-8 overflow-clip rounded border border-gray-400/40 dark:border-gray-600/40"
                 >
                   <div
                     class="bg-green-600/40 dark:bg-green-700/30 animate-pulse"
@@ -204,7 +204,7 @@
                 </div>
                 <!-- Right: Format / Clear Cache / Analysis / Examples -->
                 <div
-                  class="grid grid-cols-4 w-[497px] overflow-clip rounded border border-gray-400/40 dark:border-gray-600/40"
+                  class="grid grid-cols-4 w-124.25 overflow-clip rounded border border-gray-400/40 dark:border-gray-600/40"
                 >
                   <div
                     class="bg-gray-400/20 dark:bg-gray-600/20 animate-pulse"
@@ -225,25 +225,24 @@
         </div>
         <div class="flex flex-row justify-between">
           <div class="relative min-w-40 h-8">
-            <svg
-              aria-label="QLever logo"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="text-green-600"
-              viewBox="0 0 24 24"
-              stroke-width="1.5"
-              stroke="currentColor"
-              class="absolute left-1 top-1.5 size-4 fill-current text-green-600"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z"
-              />
-            </svg>
+            <div class="absolute left-1.5 top-2.5">
+              <span
+                id="AvailabilityIndicator"
+                class="relative flex size-2 group"
+                data-state="pending"
+              >
+                <span
+                  class="absolute inline-flex h-full w-full animate-ping rounded-full group-data-[state=pending]:bg-yellow-400 group-data-[state=error]:bg-red-400 group-data-[state=success]:invisible opacity-75"
+                ></span>
+                <span
+                  class="relative inline-flex size-2 rounded-full group-data-[state=pending]:bg-yellow-500 group-data-[state=success]:bg-green-500 group-data-[state=error]:bg-red-500"
+                ></span>
+              </span>
+            </div>
             <select
               name="backendSelector"
               id="backendSelector"
-              class="appearance-none focus:outline-none ps-5 py-1 cursor-pointer w-full rounded border border-button-border bg-slate-200 dark:bg-slate-700 hover:bg-button-hover px-3"
+              class="appearance-none focus:outline-none ps-6 py-1 cursor-pointer w-full rounded border border-button-border bg-slate-200 dark:bg-slate-700 hover:bg-button-hover px-3"
             ></select>
           </div>
           <div class="flex flex-row h-8">
@@ -465,7 +464,7 @@
             </div>
           </div>
           <div class="flex flex-col lg:flex-row gap-2 justify-between">
-            <div id="controll">
+            <div>
               <div
                 class="h-8 grid grid-cols-3 lg:grid-cols-[6rem_auto_6rem] border-button-border border rounded overflow-clip"
               >
@@ -651,7 +650,7 @@
                 </button>
               </div>
             </div>
-            <div id="controll">
+            <div>
               <div
                 class="grid grid-cols-[6rem_auto_6rem] sm:grid-cols-4 border-button-border border-separate border rounded overflow-clip h-8"
               >
@@ -746,12 +745,6 @@
               </div>
             </div>
           </div>
-        </div>
-        <div
-          id="benchmarkContainer"
-          class="bg-white dark:bg-[#1A1E24] p-5 rounded my-5 flex justify-center hidden"
-        >
-          <div id="benchmarkViz" class="w-full"></div>
         </div>
         <div
           id="resultsError"
@@ -970,55 +963,93 @@
                   </span>
                 </div>
               </div>
-              <div class="flex flex-row gap-2">
-                <button
-                  id="fullResultButton"
-                  type="button"
-                  class="border border-button-border rounded flex items-center gap-1 px-2 cursor-pointer hover bg-slate-100 dark:bg-slate-700 active:bg-slate-400 dark:active:bg-gray-950 hover:bg-button-hover hidden"
+              <a
+                id="mapViewButton"
+                href="https://qlever.dev/petrimaps/"
+                target="_blank"
+                class="border border-button-border rounded items-center gap-1 px-2 cursor-pointer hover bg-slate-100 dark:bg-slate-700 active:bg-slate-400 dark:active:bg-gray-950 hover:bg-button-hover hidden"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="size-5 text-green-600"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
+                  />
+                </svg>
+                Map view
+              </a>
+            </div>
+            <div
+              id="askResult"
+              data-state="true"
+              class="mt-10 border border-neutral-700 rounded-lg overflow-hidden bg-gray-100 group hidden"
+            >
+              <div
+                class="flex items-center gap-8 px-10 py-11 bg-white group-data-[state=false]:hidden"
+              >
+                <span
+                  class="flex items-center justify-center w-13 h-13 rounded-3xl bg-green-400/10"
                 >
                   <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
                     viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="size-5 text-green-600"
+                    fill="none"
+                    stroke="#16a34a"
+                    stroke-width="2.6"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    style="width: 26px; height: 26px"
                   >
                     <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M3 4.5h14.25M3 9h9.75M3 13.5h9.75m4.5-4.5v12m0 0-3.75-3.75M17.25 21 21 17.25"
-                    />
+                      data-dc-tpl="19"
+                      d="m5 13 4 4 10-11"
+                      stroke-dasharray="32"
+                      style="animation: 0.5s ease-out both qcheck"
+                    ></path>
                   </svg>
-                  Show full result
-                </button>
-                <a
-                  id="mapViewButton"
-                  href="https://qlever.dev/petrimaps/"
-                  target="_blank"
-                  class="border border-button-border rounded flex items-center gap-1 px-2 cursor-pointer hover bg-slate-100 dark:bg-slate-700 active:bg-slate-400 dark:active:bg-gray-950 hover:bg-button-hover hidden"
+                </span>
+                <div class="flex flex-col gap-2">
+                  <div class="text-4xl font-bold text-green-600">true</div>
+                  <div class="text-sm text-neutral-600">
+                    The pattern was matched in the graph
+                  </div>
+                </div>
+              </div>
+              <div
+                class="flex items-center gap-8 px-10 py-11 bg-white group-data-[state=true]:hidden"
+              >
+                <span
+                  class="flex items-center justify-center w-13 h-13 rounded-3xl bg-neutral-500/10"
                 >
                   <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
+                    data-dc-tpl="25"
                     viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="size-5 text-green-600"
+                    fill="none"
+                    stroke="#64748b"
+                    stroke-width="2.6"
+                    stroke-linecap="round"
+                    style="width: 24px; height: 24px"
                   >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
-                    />
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z"
-                    />
+                    <path data-dc-tpl="26" d="M7 7l10 10M17 7 7 17"></path>
                   </svg>
-                  Map view
-                </a>
+                </span>
+                <div class="flex flex-col gap-2">
+                  <div class="text-4xl font-bold text-neutral-600">false</div>
+                  <div class="text-sm text-neutral-600">
+                    No match for this pattern in the graph
+                  </div>
+                </div>
               </div>
             </div>
             <sparql-results></sparql-results>
@@ -1030,7 +1061,7 @@
             </div>
             <div
               id="resultReloadingAnimation"
-              class="flex flex-col gap-1 justify-center h-20 items-center hidden"
+              class="flex-col gap-1 justify-center h-20 items-center hidden"
             >
               <div class="flex gap-0.5 h-10 items-center">
                 <div
@@ -1327,16 +1358,17 @@
       </aside>
     </div>
     <!-- The Examples Modal -->
-    <div
+    <dialog
       id="examplesModal"
-      class="fixed z-20 left-0 top-0 w-full h-full overflow-auto bg-white/20 dark:bg-black/10 backdrop-blur-xs flex items-center justify-center hidden"
+      class="dialog-backdrop items-center justify-center"
     >
       <div
+        data-dialog-content
         id="examplesSearch"
-        class="border rounded-lg z-30 border-neutral-400 dark:border-neutral-600 shadow bg-neutral-200/60 dark:bg-neutral-500/60 text-black dark:text-neutral-300 w-4/5 md:w-1/2 xl:w-2/7 h-2/3 flex flex-col p-5"
+        class="dialog-panel w-140 max-w-full h-[60vh] flex flex-col overflow-hidden"
       >
         <div
-          class="w-full pb-5 border-b border-neutral-400 dark:border-neutral-700 flex flex-row items-center gap-2"
+          class="flex shrink-0 items-center gap-2 px-4 py-3 border-b border-neutral-100 dark:border-neutral-800"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -1344,7 +1376,7 @@
             viewBox="0 0 24 24"
             stroke-width="1.5"
             stroke="currentColor"
-            class="size-5"
+            class="w-4 h-4 shrink-0 text-neutral-400"
           >
             <path
               stroke-linecap="round"
@@ -1358,17 +1390,13 @@
             name="examplesKeywordSearchInput"
             value=""
             placeholder="Search for example queries"
-            class="w-full focus:outline-0"
+            class="w-full bg-transparent text-sm text-neutral-800 dark:text-neutral-100 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:outline-none"
           />
-          <span
-            class="border border-neutral-400 dark:border-neutral-600 rounded px-1 py-0.5 text-neutral-700 dark:text-neutral-200 text-xs"
-          >
-            esc
-          </span>
+          <kbd class="kbd">esc</kbd>
         </div>
         <div
           id="noExampleMatchWarning"
-          class="mt-5 text-red-700 text-lg items-center justify-center gap-2 hidden"
+          class="mt-5 text-red-600 dark:text-red-400 items-center justify-center gap-2 hidden"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -1376,7 +1404,7 @@
             viewBox="0 0 24 24"
             stroke-width="1.5"
             stroke="currentColor"
-            class="size-6"
+            class="size-5"
           >
             <path
               stroke-linecap="round"
@@ -1391,7 +1419,7 @@
             viewBox="0 0 24 24"
             stroke-width="1.5"
             stroke="currentColor"
-            class="size-6"
+            class="size-5"
           >
             <path
               stroke-linecap="round"
@@ -1402,970 +1430,1496 @@
         </div>
         <ul
           id="examplesList"
-          class="flex flex-col w-full text-neutral-100 dark:text-neutral-300 mt-5 overflow-auto"
+          class="flex-1 min-h-0 overflow-auto p-1.5 text-sm"
         ></ul>
-        <div class="flex-grow"></div>
       </div>
-    </div>
+    </dialog>
     <!-- The Share Modal -->
-    <div
+    <dialog
       id="shareModal"
-      class="fixed z-20 left-0 top-0 w-full h-full overflow-auto bg-white/20 dark:bg-black/10 backdrop-blur-xs flex items-center justify-center text-neutral-200 dark:text-neutral-300 hidden"
+      class="dialog-backdrop items-center justify-center text-neutral-200 dark:text-neutral-300"
     >
       <div
-        id="share"
-        class="border rounded-lg z-30 border-neutral-400 dark:border-neutral-600 shadow bg-neutral-200/60 text-neutral-600 dark:text-neutral-300 dark:bg-neutral-500/60 w-4/5 sm:w-3/4 lg:w-4/5 xl:w-4/7 h-2/3 flex flex-col gap-3 p-5 overflow-auto"
+        data-dialog-content
+        id="shareWidget"
+        class="dialog-panel relative w-140 max-w-full overflow-hidden"
       >
+        <div class="dialog-header">
+          <div>
+            <h2 class="dialog-title">Share query</h2>
+            <p class="dialog-subtitle">
+              Pick a target, tune the options, copy the result.
+            </p>
+          </div>
+          <button
+            id="shareClose"
+            type="button"
+            aria-label="Close"
+            class="dialog-close"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              class="w-4 h-4"
+            >
+              <path d="M18 6 6 18M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="flex">
+          <div
+            class="w-44 shrink-0 border-r border-neutral-100 dark:border-neutral-800 p-2 space-y-0.5"
+            role="radiogroup"
+            aria-label="Link type"
+          >
+            <button
+              id="shareAppLinkSelectButton"
+              type="button"
+              class="rail-item"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                class="w-4 h-4 mt-0.5 shrink-0"
+              >
+                <path
+                  d="M10 13a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"
+                ></path>
+                <path
+                  d="M14 11a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"
+                ></path>
+              </svg>
+              <span
+                ><span class="rail-item-label">App link</span
+                ><span class="rail-item-hint">Reopen in QLever UI</span></span
+              >
+            </button>
+            <button id="shareRawSelectButton" type="button" class="rail-item">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                class="w-4 h-4 mt-0.5 shrink-0"
+              >
+                <path d="m8 6-6 6 6 6"></path>
+                <path d="m16 6 6 6-6 6"></path>
+              </svg>
+              <span
+                ><span class="rail-item-label">API request</span
+                ><span class="rail-item-hint">Raw endpoint URL</span></span
+              >
+            </button>
+            <button id="shareCurlSelectButton" type="button" class="rail-item">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                class="w-4 h-4 mt-0.5 shrink-0"
+              >
+                <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                <path d="m6 9 3 3-3 3M13 15h4"></path>
+              </svg>
+              <span
+                ><span class="rail-item-label">cURL</span
+                ><span class="rail-item-hint">Terminal command</span></span
+              >
+            </button>
+          </div>
+          <div class="flex-1 min-w-0 p-4 space-y-3.5">
+            <div class="grid">
+              <div
+                id="appLinkOptions"
+                class="col-start-1 row-start-1 space-y-3.5 invisible"
+              >
+                <div class="flex items-center justify-between gap-3">
+                  <div>
+                    <div
+                      class="text-sm font-medium text-neutral-800 dark:text-neutral-200"
+                    >
+                      Run automatically
+                    </div>
+                    <div class="text-xs text-neutral-500 dark:text-neutral-400">
+                      Execute on open.
+                    </div>
+                  </div>
+                  <label>
+                    <span class="sr-only">Run automatically</span>
+                    <input
+                      id="shareOptionRun"
+                      type="checkbox"
+                      value=""
+                      class="sr-only peer"
+                    />
+                    <div class="toggle-switch"></div>
+                  </label>
+                </div>
+                <div
+                  class="segment-group"
+                  role="radiogroup"
+                  aria-label="Link contents"
+                >
+                  <button
+                    id="shareOptionShortLink"
+                    type="button"
+                    class="segment-item"
+                  >
+                    Short link
+                  </button>
+                  <button
+                    id="shareOptionFullQuery"
+                    type="button"
+                    class="segment-item"
+                  >
+                    Full query
+                  </button>
+                </div>
+              </div>
+              <div id="rawOptions" class="col-start-1 row-start-1 invisible">
+                <span class="text-neutral-800 dark:text-neutral-400 text-xs">
+                  Request to the SPARQL endpoint — select the format.
+                </span>
+                <select id="shareRawFormatSelect" class="dialog-select">
+                  <option value="sparql_json">
+                    JSON — application/sparql-results+json
+                  </option>
+                  <option value="qlever_json">
+                    QLever JSON — application/qlever-results+json
+                  </option>
+                  <option value="csv">CSV — text/csv</option>
+                  <option value="tsv">TSV — text/tab-separated-values</option>
+                  <option value="turtle">Turtle — text/turtle</option>
+                  <option value="binary">
+                    Binary — application/octet-stream
+                  </option>
+                </select>
+              </div>
+
+              <div
+                id="curlOptions"
+                class="col-start-1 row-start-1 space-y-3.5 invisible"
+              >
+                <div
+                  class="segment-group"
+                  role="radiogroup"
+                  aria-label="HTTP method"
+                >
+                  <button
+                    id="shareOptionGETButton"
+                    type="button"
+                    class="segment-item"
+                  >
+                    GET
+                  </button>
+                  <button
+                    id="shareOptionPOSTButton"
+                    type="button"
+                    class="segment-item"
+                  >
+                    POST
+                  </button>
+                </div>
+                <select id="shareCurlFormatSelect" class="dialog-select">
+                  <option value="sparql_json">
+                    JSON — application/sparql-results+json
+                  </option>
+                  <option value="qlever_json">
+                    QLever JSON — application/qlever-results+json
+                  </option>
+                  <option value="csv">CSV — text/csv</option>
+                  <option value="tsv">TSV — text/tab-separated-values</option>
+                  <option value="turtle">Turtle — text/turtle</option>
+                  <option value="binary">
+                    Binary — application/octet-stream
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="space-y-2">
+              <span
+                class="text-xs font-medium text-neutral-500 dark:text-neutral-400"
+                >Result · <span data-type-label="">cURL · GET</span></span
+              >
+              <div
+                class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950 p-3 overflow-x-auto"
+              >
+                <pre
+                  class="font-mono text-[12px] leading-relaxed text-neutral-800 dark:text-neutral-200 whitespace-pre"
+                ><code  id="shareResult">curl -s 'https://qlever.cs.uni-freiburg.de/api/wikidata?query=PREFIX%20wd%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fentity%2F%3E%0APREFIX%20wdt%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Fdirect%2F%3E%0ASELECT%20%3Fcity%20%3Fpopulation%20WHERE%20%7B%0A%20%20%3Fcity%20wdt%3AP31%20wd%3AQ515%20.%0A%20%20%3Fcity%20wdt%3AP1082%20%3Fpopulation%20.%0A%7D%0AORDER%20BY%20DESC(%3Fpopulation)%0ALIMIT%20100' \
+  -H 'Accept: application/sparql-results+json'</code></pre>
+              </div>
+            </div>
+            <button
+              id="shareCopyButton"
+              type="button"
+              class="dialog-button-primary"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                class="w-4 h-4"
+              >
+                <rect x="9" y="9" width="11" height="11" rx="2"></rect>
+                <path
+                  d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                ></path>
+              </svg>
+              <span>Copy</span>
+            </button>
+          </div>
+        </div>
         <div
-          class="border-b border-neutral-400 dark:border-neutral-600 pb-3 mb-3"
+          class="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 translate-y-1 opacity-0 rounded-md bg-neutral-900 dark:bg-neutral-100 px-3 py-1.5 text-xs font-medium text-white dark:text-neutral-900 shadow-lg transition-all duration-200"
         >
-          <h2 class="text-center text-lg font-bold">Share your query</h2>
-        </div>
-        <div class="w-full">
-          <h4 class="text-md font-bold">
-            URL to this query in the QLever UI (short, with query hash)
-          </h4>
-          <div
-            class="bg-neutral-300 dark:bg-neutral-800 rounded p-1 w-full flex justify-between items-center"
-          >
-            <span
-              id="shareLink1"
-              class="overflow-auto whitespace-nowrap no-scrollbar text-neutral-500 dark:text-neutral-300"
-            >
-            </span>
-            <button
-              type="button"
-              class="cursor-pointer flex flex-row w-fit rounded p-1 hover:bg-neutral-300 hover:dark:bg-neutral-700"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="size-5"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"
-                />
-              </svg>
-              copy
-            </button>
-          </div>
-        </div>
-        <div>
-          <h4 class="text-md font-bold">
-            URL to this query in the QLever UI (short, with query hash, execute
-            automatically)
-          </h4>
-          <div
-            class="bg-neutral-300 dark:bg-neutral-800 rounded p-1 w-full flex justify-between items-center"
-          >
-            <span
-              id="shareLink2"
-              class="overflow-auto whitespace-nowrap no-scrollbar text-neutral-500 dark:text-neutral-300"
-            >
-            </span>
-            <button
-              type="button"
-              class="cursor-pointer flex flex-row w-fit rounded p-1 hover:bg-neutral-300 hover:dark:bg-neutral-700"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="size-5"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"
-                />
-              </svg>
-              copy
-            </button>
-          </div>
-        </div>
-        <div>
-          <h4 class="text-md font-bold">
-            URL to this query in the QLever UI (long, with full query string)
-          </h4>
-          <div
-            class="bg-neutral-300 dark:bg-neutral-800 rounded p-1 w-full flex justify-between items-center"
-          >
-            <span
-              id="shareLink3"
-              class="overflow-auto whitespace-nowrap no-scrollbar text-neutral-500 dark:text-neutral-300"
-            >
-            </span>
-            <button
-              type="button"
-              class="cursor-pointer flex flex-row w-fit rounded p-1 hover:bg-neutral-300 hover:dark:bg-neutral-700"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="size-5"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"
-                />
-              </svg>
-              copy
-            </button>
-          </div>
-        </div>
-        <div>
-          <h4 class="text-md font-bold">
-            URL for GET request (for use in web apps, etc.)
-          </h4>
-          <div
-            class="bg-neutral-300 dark:bg-neutral-800 rounded p-1 w-full flex justify-between items-center"
-          >
-            <span
-              id="shareLink4"
-              class="overflow-auto whitespace-nowrap no-scrollbar text-neutral-500 dark:text-neutral-300"
-            >
-            </span>
-            <button
-              type="button"
-              class="cursor-pointer flex flex-row w-fit rounded p-1 hover:bg-neutral-300 hover:dark:bg-neutral-700"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="size-5"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"
-                />
-              </svg>
-              copy
-            </button>
-          </div>
-        </div>
-        <div>
-          <h4 class="text-md font-bold">
-            cURL command line for POST request
-            (application/sparql-results+json):
-          </h4>
-          <div
-            class="bg-neutral-300 dark:bg-neutral-800 rounded p-1 w-full flex justify-between items-center"
-          >
-            <span
-              id="shareLink5"
-              class="overflow-auto whitespace-nowrap no-scrollbar text-neutral-500 dark:text-neutral-300"
-            >
-            </span>
-            <button
-              type="button"
-              class="cursor-pointer flex flex-row w-fit rounded p-1 hover:bg-neutral-300 hover:dark:bg-neutral-700"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="size-5"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"
-                />
-              </svg>
-              copy
-            </button>
-          </div>
-        </div>
-        <div>
-          <h4 class="text-md font-bold">
-            cURL command line for GET request (application/qlever-results+json):
-          </h4>
-          <div
-            class="bg-neutral-300 dark:bg-neutral-800 rounded p-1 w-full flex justify-between items-center"
-          >
-            <span
-              id="shareLink6"
-              class="overflow-auto whitespace-nowrap no-scrollbar text-neutral-500 dark:text-neutral-300"
-            >
-            </span>
-            <button
-              type="button"
-              class="cursor-pointer flex flex-row w-fit rounded p-1 hover:bg-neutral-300 hover:dark:bg-neutral-700"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="size-5"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"
-                />
-              </svg>
-              copy
-            </button>
-          </div>
-        </div>
-        <div>
-          <h4 class="text-md font-bold">
-            Unescaped query string (in one line):
-          </h4>
-          <div
-            class="bg-neutral-300 dark:bg-neutral-800 rounded p-1 w-full flex justify-between items-center"
-          >
-            <span
-              id="shareLink7"
-              class="overflow-auto whitespace-nowrap no-scrollbar text-neutral-500 dark:text-neutral-300"
-            >
-            </span>
-            <button
-              type="button"
-              class="cursor-pointer flex flex-row w-fit rounded p-1 hover:bg-neutral-300 hover:dark:bg-neutral-700"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="currentColor"
-                class="size-5"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  d="M15.666 3.888A2.25 2.25 0 0 0 13.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 0 1-.75.75H9a.75.75 0 0 1-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 0 1-2.25 2.25H6.75A2.25 2.25 0 0 1 4.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 0 1 1.927-.184"
-                />
-              </svg>
-              copy
-            </button>
-          </div>
+          Copied to clipboard
         </div>
       </div>
-    </div>
+    </dialog>
     <!-- The Dataset Information Modal -->
-    <div
+    <dialog
       id="datasetInformationModal"
-      class="fixed z-20 left-0 top-0 w-full h-full overflow-auto bg-white/20 dark:bg-black/10 backdrop-blur-xs hidden flex flex-col justify-center"
+      class="dialog-backdrop items-center justify-center"
     >
-      <div class="h-4/5 w-full flex flex-col items-center justify-top">
-        <div
-          id="datasetInformationContainer"
-          class="border rounded-lg z-30 border-neutral-400 dark:border-neutral-600 shadow bg-neutral-200/60 dark:bg-neutral-500/60 text-neutral-500 dark:text-neutral-300 w-4/5 md:w-3/4 xl:w-1/2 flex flex-col p-5"
-        >
-          <div
-            class="w-full pb-5 border-b border-neutral-400 dark:border-neutral-700 flex justify-center text-lg font-bold"
-          >
-            Dataset Information
+      <div
+        data-dialog-content
+        id="datasetInformationContainer"
+        class="dialog-panel w-140 max-w-full max-h-[90vh] overflow-y-auto"
+      >
+        <div class="dialog-header">
+          <div>
+            <h2 class="dialog-title">Dataset information</h2>
+            <p class="dialog-subtitle">
+              Endpoint details and index statistics.
+            </p>
           </div>
-          <div class="grid grid-cols-[5rem_auto] gap-2 mt-5">
-            <span class="font-bold">URL</span>
-            <span id="datasetUrl"></span>
-            <span class="font-bold">Description</span>
-            <span id="datasetDescription"></span>
-            <span class="font-bold">Statistics</span>
-            <div>
-              <div class="grid grid-cols-[10rem_auto]">
-                <span>Number of triples:</span>
-                <span class="font-bold" id="datasetNumberOfTriples"></span>
-                <span>Number of subjects:</span>
-                <span class="font-bold" id="datasetNumberOfSubjects"></span>
-                <span>Number of predicates:</span>
-                <span class="font-bold" id="datasetNumberOfPredicates"></span>
-                <span>Number of objects:</span>
-                <span class="font-bold" id="datasetNumberOfObjects"></span>
+          <button
+            id="datasetInformationClose"
+            type="button"
+            aria-label="Close"
+            class="dialog-close"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              class="w-4 h-4"
+            >
+              <path d="M18 6 6 18M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="p-5 space-y-4 text-sm">
+          <div class="flex flex-col gap-7">
+            <div class="flex flex-col gap-3">
+              <span
+                class="font-semibold text-xs text-neutral-500 dark:text-neutral-400"
+                >ENDPOINT</span
+              >
+              <div
+                class="flex flex-row items-center gap-2 text-md text-black dark:text-neutral-200 bg-neutral-50 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 p-3 rounded"
+              >
+                <span id="datasetUrl" class="min-w-0 break-all"></span>
+                <button
+                  id="datasetUrlCopy"
+                  type="button"
+                  class="ml-auto shrink-0 hover:text-blue-500 cursor-pointer"
+                  title="Copy to clipboard"
+                >
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    class="w-4 h-4"
+                  >
+                    <rect x="9" y="9" width="11" height="11" rx="2"></rect>
+                    <path
+                      d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
+                    ></path>
+                  </svg>
+                </button>
+              </div>
+              <div class="flex felx-row gap-2 items-center">
+                <span
+                  class="inline-flex items-center gap-1 text-black dark:text-neutral-200 bg-neutral-50 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 py-1 px-2 rounded-xl"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke-width="1.5"
+                    stroke="currentColor"
+                    class="size-3.5 text-neutral-500"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      d="m21 7.5-9-5.25L3 7.5m18 0-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9"
+                    />
+                  </svg>
+                  QLever
+
+                  <span
+                    id="datasetEndpointVersion"
+                    class="min-w-0 text-neutral-800 dark:text-neutral-200"
+                  ></span>
+                </span>
+                <div>
+                  <span class="text-neutral-500 dark:text-neutral-400"
+                    >server</span
+                  >
+                </div>
+
+                <div>
+                  <span
+                    id="datasetEndpointServerHash"
+                    class="min-w-0 text-neutral-800 dark:text-neutral-200"
+                  ></span>
+                </div>
+                <span class="text-neutral-500 dark:text-neutral-400"
+                  >index</span
+                >
+
+                <span
+                  id="datasetEndpointIndexHash"
+                  class="min-w-0 text-neutral-800 dark:text-neutral-200"
+                ></span>
+              </div>
+            </div>
+            <div class="flex flex-col gap-2">
+              <span
+                class="font-semibold text-xs text-neutral-500 dark:text-neutral-400"
+                >DESCRIPTION</span
+              >
+              <span
+                id="datasetDescription"
+                class="min-w-0 text-neutral-800 dark:text-neutral-200"
+              ></span>
+            </div>
+            <div class="flex flex-col gap-2">
+              <span
+                class="font-semibold text-xs text-neutral-500 dark:text-neutral-400"
+                >STATISTICS</span
+              >
+              <div class="grid grid-cols-2 gap-2">
+                <div
+                  class="flex flex-col bg-neutral-50 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 p-3 rounded"
+                >
+                  <span
+                    class="text-xl text-black dark:text-white font-bold"
+                    id="datasetNumberOfTriples"
+                  ></span>
+                  <span class="text-sm text-neutral-500 dark:text-neutral-400"
+                    >Triples</span
+                  >
+                </div>
+                <div
+                  class="flex flex-col bg-neutral-50 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 p-3 rounded"
+                >
+                  <span
+                    class="text-xl text-black dark:text-white font-bold"
+                    id="datasetNumberOfSubjects"
+                  ></span>
+                  <span class="text-sm text-neutral-500 dark:text-neutral-400"
+                    >Subjects</span
+                  >
+                </div>
+                <div
+                  class="flex flex-col bg-neutral-50 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 p-3 rounded"
+                >
+                  <span
+                    class="text-xl font-bold tabular-nums"
+                    id="datasetNumberOfPredicates"
+                  ></span>
+                  <span class="text-sm text-neutral-500 dark:text-neutral-400"
+                    >Predicates</span
+                  >
+                </div>
+                <div
+                  class="flex flex-col bg-neutral-50 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 p-3 rounded"
+                >
+                  <span
+                    class="text-xl font-bold tabular-nums"
+                    id="datasetNumberOfObjects"
+                  ></span>
+                  <span class="text-sm text-neutral-500 dark:text-neutral-400"
+                    >Objects</span
+                  >
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </dialog>
     <!-- The Help Modal -->
-    <div
-      id="helpModal"
-      class="fixed z-20 left-0 top-0 w-full h-full overflow-auto bg-white/20 dark:bg-black/10 backdrop-blur-xs flex justify-center hidden"
-    >
+    <dialog id="helpModal" class="dialog-backdrop items-center justify-center">
       <div
+        data-dialog-content
         id="helpContainer"
-        class="border rounded-lg z-30 border-neutral-400 dark:border-neutral-600 shadow bg-neutral-200/60 dark:bg-neutral-500/60 text-neutral-500 dark:text-neutral-300 w-4/5 md:w-4/5 xl:w-1/2 h-min flex flex-col p-5 mt-20"
+        class="dialog-panel w-160 max-w-full max-h-[90vh] overflow-y-auto"
       >
-        <!-- Header -->
-        <div
-          class="w-full pb-5 border-b border-slate-800 dark:border-neutral-700 flex justify-center text-lg font-bold"
-        >
-          Help
+        <div class="dialog-header">
+          <div>
+            <h2 class="dialog-title">Help</h2>
+            <p class="dialog-subtitle">Keyboard shortcuts for the QLever UI.</p>
+          </div>
+          <button
+            id="helpClose"
+            type="button"
+            aria-label="Close"
+            class="dialog-close"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              class="w-4 h-4"
+            >
+              <path d="M18 6 6 18M6 6l12 12"></path>
+            </svg>
+          </button>
         </div>
-        <div class="w-full py-3 mt-4 flex justify-center text-md font-bold">
-          Shortcuts
-        </div>
-        <div class="text-sm flex flex-col gap-1">
-          <span>
-            Press
-            <kbd
-              class="border inline-block rounded px-1 whitespace-nowrap inset-shadow-2xs inset-shadow-white bg-neutral-200 dark:bg-neutral-500"
-            >
-              ?
-            </kbd>
-            anytime to see this help dialog.
-          </span>
-          <span>
-            Press
-            <kbd
-              class="border inline-block rounded px-1 whitespace-nowrap inset-shadow-2xs inset-shadow-white bg-neutral-200 dark:bg-neutral-500"
-            >
-              Escape
-            </kbd>
-            to close any Dialog.
-          </span>
-          <span>
-            Press
-            <kbd
-              class="modkey border inline-block rounded px-1 whitespace-nowrap inset-shadow-2xs inset-shadow-white bg-neutral-200 dark:bg-neutral-500"
-            >
-              Ctrl
-            </kbd>
-            +
-            <kbd
-              class="border inline-block rounded px-1 whitespace-nowrap inset-shadow-2xs inset-shadow-white bg-neutral-200 dark:bg-neutral-500"
-            >
-              Enter
-            </kbd>
-            to execute/cancel the query.
-          </span>
-          <span>
-            Press
-            <kbd
-              class="modkey border inline-block rounded px-1 whitespace-nowrap inset-shadow-2xs inset-shadow-white bg-neutral-200 dark:bg-neutral-500"
-            >
-              Ctrl
-            </kbd>
-            +
-            <kbd
-              class="border inline-block rounded px-1 whitespace-nowrap inset-shadow-2xs inset-shadow-white bg-neutral-200 dark:bg-neutral-500"
-            >
-              F
-            </kbd>
-            to format the document.
-          </span>
-          <span>
-            Press
-            <kbd
-              class="modkey border inline-block rounded px-1 whitespace-nowrap inset-shadow-2xs inset-shadow-white bg-neutral-200 dark:bg-neutral-500"
-            >
-              Ctrl
-            </kbd>
-            +
-            <kbd
-              class="border inline-block rounded px-1 whitespace-nowrap inset-shadow-2xs inset-shadow-white bg-neutral-200 dark:bg-neutral-500"
-            >
-              ,
-            </kbd>
-            to open the settings.
-          </span>
-          <span>
-            Press
-            <kbd
-              class="modkey border inline-block rounded px-1 whitespace-nowrap inset-shadow-2xs inset-shadow-white bg-neutral-200 dark:bg-neutral-500"
-            >
-              Tab
-            </kbd>
-            to jump to the next location.
-          </span>
-          <span>
-            Press
-            <kbd
-              class="modkey border inline-block rounded px-1 whitespace-nowrap inset-shadow-2xs inset-shadow-white bg-neutral-200 dark:bg-neutral-500"
-            >
-              Shift
-            </kbd>
-            +
-            <kbd
-              class="modkey border inline-block rounded px-1 whitespace-nowrap inset-shadow-2xs inset-shadow-white bg-neutral-200 dark:bg-neutral-500"
-            >
-              Tab
-            </kbd>
-            to jump to the previous location.
-          </span>
-          <span>
-            Press
-            <kbd
-              class="modkey border inline-block rounded px-1 whitespace-nowrap inset-shadow-2xs inset-shadow-white bg-neutral-200 dark:bg-neutral-500"
-            >
-              Ctrl
-            </kbd>
-            +
-            <kbd
-              class="border inline-block rounded px-1 whitespace-nowrap inset-shadow-2xs inset-shadow-white bg-neutral-200 dark:bg-neutral-500"
-            >
-              P
-            </kbd>
-            to open the command prompt.
-          </span>
+        <div class="p-5">
+          <div
+            class="text-xs font-medium uppercase tracking-wide text-neutral-500 dark:text-neutral-400"
+          >
+            Shortcuts
+          </div>
+          <dl
+            class="mt-2 divide-y divide-neutral-100 dark:divide-neutral-800 text-sm"
+          >
+            <div class="flex items-center justify-between gap-6 py-2">
+              <dt class="text-neutral-700 dark:text-neutral-300">
+                Show this help dialog
+              </dt>
+              <dd class="flex shrink-0 items-center gap-1">
+                <kbd class="kbd">?</kbd>
+              </dd>
+            </div>
+            <div class="flex items-center justify-between gap-6 py-2">
+              <dt class="text-neutral-700 dark:text-neutral-300">
+                Close any dialog
+              </dt>
+              <dd class="flex shrink-0 items-center gap-1">
+                <kbd class="kbd">Escape</kbd>
+              </dd>
+            </div>
+            <div class="flex items-center justify-between gap-6 py-2">
+              <dt class="text-neutral-700 dark:text-neutral-300">
+                Execute or cancel the query
+              </dt>
+              <dd class="flex shrink-0 items-center gap-1">
+                <kbd class="modkey kbd">Ctrl</kbd>
+                <span class="text-neutral-400">+</span>
+                <kbd class="kbd">Enter</kbd>
+              </dd>
+            </div>
+            <div class="flex items-center justify-between gap-6 py-2">
+              <dt class="text-neutral-700 dark:text-neutral-300">
+                Format the document
+              </dt>
+              <dd class="flex shrink-0 items-center gap-1">
+                <kbd class="modkey kbd">Ctrl</kbd>
+                <span class="text-neutral-400">+</span>
+                <kbd class="kbd">F</kbd>
+              </dd>
+            </div>
+            <div class="flex items-center justify-between gap-6 py-2">
+              <dt class="text-neutral-700 dark:text-neutral-300">
+                Open the settings
+              </dt>
+              <dd class="flex shrink-0 items-center gap-1">
+                <kbd class="modkey kbd">Ctrl</kbd>
+                <span class="text-neutral-400">+</span>
+                <kbd class="kbd">,</kbd>
+              </dd>
+            </div>
+            <div class="flex items-center justify-between gap-6 py-2">
+              <dt class="text-neutral-700 dark:text-neutral-300">
+                Open the command prompt
+              </dt>
+              <dd class="flex shrink-0 items-center gap-1">
+                <kbd class="modkey kbd">Ctrl</kbd>
+                <span class="text-neutral-400">+</span>
+                <kbd class="kbd">P</kbd>
+              </dd>
+            </div>
+            <div class="flex items-center justify-between gap-6 py-2">
+              <dt class="text-neutral-700 dark:text-neutral-300">
+                Jump to the next location
+              </dt>
+              <dd class="flex shrink-0 items-center gap-1">
+                <kbd class="kbd">Tab</kbd>
+              </dd>
+            </div>
+            <div class="flex items-center justify-between gap-6 py-2">
+              <dt class="text-neutral-700 dark:text-neutral-300">
+                Jump to the previous location
+              </dt>
+              <dd class="flex shrink-0 items-center gap-1">
+                <kbd class="kbd">Shift</kbd>
+                <span class="text-neutral-400">+</span>
+                <kbd class="kbd">Tab</kbd>
+              </dd>
+            </div>
+          </dl>
         </div>
       </div>
-    </div>
+    </dialog>
     <!-- The Settings Modal -->
-    <div
+    <dialog
       id="settingsModal"
-      class="fixed z-20 left-0 top-0 w-full h-full overflow-auto bg-white/20 dark:bg-black/10 backdrop-blur-xs flex justify-center hidden"
+      class="dialog-backdrop items-center justify-center"
     >
       <div
+        data-dialog-content
         id="settingsContainer"
-        class="border rounded-lg z-30 border-neutral-400 dark:border-neutral-600 shadow bg-neutral-200/80 dark:bg-neutral-500/60 text-neutral-500 dark:text-neutral-300 w-[95%] md:w-4/5 xl:w-1/2 flex flex-col p-3 md:p-5 mt-4 md:mt-20 mb-4 h-fit max-h-[92vh] overflow-y-auto"
+        class="dialog-panel w-200 max-w-full h-[66vh] flex flex-col overflow-hidden"
       >
-        <div
-          class="w-full pb-5 border-b border-neutral-400 dark:border-neutral-200 flex justify-center text-lg font-bold"
-        >
-          Settings
-        </div>
-        <div
-          class="mt-5 mx-2 md:mx-5 flex flex-col justify-center text-md font-bold"
-        >
-          <span class="text-md text-center">General</span>
-          <div
-            class="w-full my-3 border-b border-neutral-400 dark:border-neutral-200"
-          ></div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
-            <div class="flex items-center gap-2">
-              <label for="accessToken" class="font-bold whitespace-nowrap"
-                >Access Token</label
-              >
-              <input
-                id="settings-general-accessToken"
-                class="border rounded text-md p-1 grow min-w-0"
-                type="text"
-                name="accessToken"
-                value=""
-              />
-            </div>
+        <div class="dialog-header shrink-0">
+          <div>
+            <h2 class="dialog-title">Settings</h2>
           </div>
-        </div>
-        <div class="grid grid-cols-1 lg:grid-cols-3">
-          <div
-            class="lg:col-span-2 mt-5 mx-2 md:mx-5 flex flex-col text-md font-bold"
+          <button
+            id="settingsClose"
+            type="button"
+            aria-label="Close"
+            class="dialog-close"
           >
-            <span class="text-md text-center">Editor</span>
-            <div
-              class="w-full my-3 border-b border-neutral-400 dark:border-neutral-200"
-            ></div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
-              <div
-                class="flex flex-col items-center text-md font-bold mx-1 md:mx-3"
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              class="w-4 h-4"
+            >
+              <path d="M18 6 6 18M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="flex min-h-0 flex-1">
+          <div
+            class="w-60 shrink-0 border-r border-neutral-100 dark:border-neutral-800 p-2 space-y-0.5 overflow-y-auto"
+            role="radiogroup"
+            aria-label="Link type"
+          >
+            <button
+              type="button"
+              class="rail-item"
+              data-settings-tab="settingsGeneral"
+              data-state="active"
+            >
+              <span
+                ><span class="rail-item-label">General</span
+                ><span class="rail-item-hint">Access token</span></span
               >
-                <span class="text-md text-center">Formatting</span>
-                <div
-                  class="w-full my-3 border-b border-neutral-400 dark:border-neutral-200"
-                ></div>
-
-                <div class="flex flex-col gap-2 items-start w-min">
-                  <label class="inline-flex items-center cursor-pointer">
+            </button>
+            <button
+              type="button"
+              class="rail-item"
+              data-settings-tab="settingsFormat"
+            >
+              <span
+                ><span class="rail-item-label">Formatting</span
+                ><span class="rail-item-hint"
+                  >How queries are laid out</span
+                ></span
+              >
+            </button>
+            <button
+              type="button"
+              class="rail-item"
+              data-settings-tab="settingsCompletion"
+            >
+              <span
+                ><span class="rail-item-label">Complation</span
+                ><span class="rail-item-hint"
+                  >Autocompletion behaviour</span
+                ></span
+              >
+            </button>
+            <button
+              type="button"
+              class="rail-item"
+              data-settings-tab="settingsMiscellaneous"
+            >
+              <span
+                ><span class="rail-item-label">Miscellaneous</span
+                ><span class="rail-item-hint"
+                  >Prefixes and navigation</span
+                ></span
+              >
+            </button>
+            <button
+              type="button"
+              class="rail-item"
+              data-settings-tab="settingsResults"
+            >
+              <span
+                ><span class="rail-item-label">Results</span
+                ><span class="rail-item-hint"
+                  >How results are displayed</span
+                ></span
+              >
+            </button>
+          </div>
+          <div class="flex-1 min-w-0 min-h-0 p-4 space-y-3.5 overflow-y-auto">
+            <div id="settingsGeneral" class="p-2">
+              <div
+                class="border-b w-full pb-3 border-neutral-200 dark:border-neutral-800 text-neutral-500 font-semibold"
+              >
+                ACCESS TOKENS
+              </div>
+              <div
+                class="flex flex-col divide-y divide-neutral-200 dark:divide-neutral-800"
+              >
+                <div class="grid grid-cols-2 gap-2 py-4 items-start">
+                  <div class="flex flex-col">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      Triple store token
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Sent to the SPARQL endpoint for privileged operations —
+                      updates, rebuilding the index.
+                    </span>
+                  </div>
+                  <div class="relative min-w-0">
+                    <input
+                      id="settings-general-accessToken"
+                      class="w-full text-black dark:text-white bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-800 rounded text-[0.7rem] p-2 pr-8 min-w-0"
+                      type="password"
+                      name="accessToken"
+                      value=""
+                    />
+                    <button
+                      type="button"
+                      data-password-toggle
+                      title="Show token in clear text"
+                      class="absolute top-1/2 right-1 -translate-y-1/2 flex items-center justify-center w-6.5 h-6.5 rounded-[5px] text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700 cursor-pointer"
+                    >
+                      <svg
+                        data-password-icon="show"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.7"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="w-3.75 h-3.75"
+                      >
+                        <path
+                          d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12S18 18.5 12 18.5 2.5 12 2.5 12Z"
+                        ></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                      </svg>
+                      <svg
+                        data-password-icon="hide"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.7"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="w-3.75 h-3.75 hidden"
+                      >
+                        <path
+                          d="M3 3l18 18M10.6 10.6a2 2 0 002.8 2.8M9.9 5.7A8.6 8.6 0 0112 5.5c6 0 9.5 6.5 9.5 6.5a17 17 0 01-2.9 3.7M6.4 7.4A17 17 0 002.5 12S6 18.5 12 18.5c.8 0 1.6-.1 2.3-.3"
+                        ></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-2 py-4 items-start">
+                  <div class="flex flex-col">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      QLever UI token
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Unlocks editing in this UI — adding and changing saved
+                      examples, backend settings.
+                    </span>
+                  </div>
+                  <div class="relative min-w-0">
+                    <input
+                      id="settings-general-uiToken"
+                      class="w-full text-black dark:text-white bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-800 rounded text-[0.7rem] p-2 pr-8 min-w-0"
+                      type="password"
+                      name="uiToken"
+                      value=""
+                    />
+                    <button
+                      type="button"
+                      data-password-toggle
+                      title="Show token in clear text"
+                      class="absolute top-1/2 right-1 -translate-y-1/2 flex items-center justify-center w-6.5 h-6.5 rounded-[5px] text-neutral-500 dark:text-neutral-400 hover:bg-neutral-200 dark:hover:bg-neutral-700 cursor-pointer"
+                    >
+                      <svg
+                        data-password-icon="show"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.7"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="w-3.75 h-3.75"
+                      >
+                        <path
+                          d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12S18 18.5 12 18.5 2.5 12 2.5 12Z"
+                        ></path>
+                        <circle cx="12" cy="12" r="3"></circle>
+                      </svg>
+                      <svg
+                        data-password-icon="hide"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.7"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        class="w-3.75 h-3.75 hidden"
+                      >
+                        <path
+                          d="M3 3l18 18M10.6 10.6a2 2 0 002.8 2.8M9.9 5.7A8.6 8.6 0 0112 5.5c6 0 9.5 6.5 9.5 6.5a17 17 0 01-2.9 3.7M6.4 7.4A17 17 0 002.5 12S6 18.5 12 18.5c.8 0 1.6-.1 2.3-.3"
+                        ></path>
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="settingsFormat" class="hidden">
+              <div
+                class="border-b w-full pb-3 border-neutral-200 dark:border-neutral-800 text-neutral-500 font-semibold"
+              >
+                FORMATTING
+              </div>
+              <div
+                class="flex flex-col divide-y divide-neutral-200 dark:divide-neutral-800"
+              >
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      Align prefixes
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Pad PREFIX declarations so the IRIs line up.
+                    </span>
+                  </div>
+                  <label class="cursor-pointer">
                     <input
                       id="settings-editor-format-alignPrefixes"
                       type="checkbox"
                       value=""
                       class="sr-only peer"
                     />
-                    <div
-                      class="relative w-9 h-5 bg-neutral-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"
-                    ></div>
-                    <span
-                      class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
-                      >Align prefixes</span
-                    >
+                    <div class="toggle-switch"></div>
+                    <span class="sr-only">Align prefixes</span>
                   </label>
-                  <label class="inline-flex items-center cursor-pointer">
+                </div>
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      Align predicates
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Indent predicates of a shared subject to a common column.
+                    </span>
+                  </div>
+                  <label class="cursor-pointer">
                     <input
                       id="settings-editor-format-alignPredicates"
                       type="checkbox"
                       value=""
                       class="sr-only peer"
                     />
-                    <div
-                      class="relative w-9 h-5 bg-neutral-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"
-                    ></div>
-                    <span
-                      class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
-                      >Align predicates</span
-                    >
+                    <div class="toggle-switch"></div>
+                    <span class="sr-only">Align predicates</span>
                   </label>
-                  <label class="inline-flex items-center cursor-pointer">
+                </div>
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      Separate prologue
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Blank line between the prefix block and the query body.
+                    </span>
+                  </div>
+                  <label class="cursor-pointer">
                     <input
                       id="settings-editor-format-separatePrologue"
                       type="checkbox"
                       value=""
                       class="sr-only peer"
                     />
-                    <div
-                      class="relative w-9 h-5 bg-neutral-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"
-                    ></div>
-                    <span
-                      class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
-                      >Separate Prologue
-                    </span>
+                    <div class="toggle-switch"></div>
+                    <span class="sr-only">Separate prologue</span>
                   </label>
-                  <label class="inline-flex items-center cursor-pointer">
+                </div>
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      Capitalize keywords
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Write SELECT, WHERE and FILTER in upper case.
+                    </span>
+                  </div>
+                  <label class="cursor-pointer">
                     <input
                       id="settings-editor-format-capitalizeKeywords"
                       type="checkbox"
                       value=""
                       class="sr-only peer"
                     />
-                    <div
-                      class="relative w-9 h-5 bg-neutral-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"
-                    ></div>
-                    <span
-                      class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
-                      >Capitalize keywords</span
-                    >
+                    <div class="toggle-switch"></div>
+                    <span class="sr-only">Capitalize keywords</span>
                   </label>
-                  <label class="inline-flex items-center cursor-pointer">
+                </div>
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      Line break after WHERE
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Add a linebreak before the first '{'
+                    </span>
+                  </div>
+                  <label class="cursor-pointer">
                     <input
                       id="settings-editor-format-whereNewLine"
                       type="checkbox"
                       value=""
                       class="sr-only peer"
                     />
-                    <div
-                      class="relative w-9 h-5 bg-neutral-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"
-                    ></div>
-                    <span
-                      class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
-                      >Line break after WHERE</span
-                    >
+                    <div class="toggle-switch"></div>
+                    <span class="sr-only"> Line break after WHERE </span>
                   </label>
-                  <label class="inline-flex items-center cursor-pointer">
+                </div>
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      Trailing filter
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Move FILTER clauses to the end of their group.
+                    </span>
+                  </div>
+                  <label class="cursor-pointer">
                     <input
                       id="settings-editor-format-filterSameLine"
                       type="checkbox"
                       value=""
                       class="sr-only peer"
                     />
-                    <div
-                      class="relative w-9 h-5 bg-neutral-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"
-                    ></div>
-                    <span
-                      class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
-                      >Trailing Filter</span
-                    >
+                    <div class="toggle-switch"></div>
+                    <span class="sr-only"> Trailing filter </span>
                   </label>
-                  <label class="inline-flex items-center cursor-pointer">
+                </div>
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      Insert spaces
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Indent with spaces instead of tab characters.
+                    </span>
+                  </div>
+                  <label class="cursor-pointer">
                     <input
                       id="settings-editor-format-insertSpaces"
-                      data-type="boolean"
                       type="checkbox"
                       value=""
                       class="sr-only peer"
                     />
-                    <div
-                      class="relative w-9 h-5 bg-neutral-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"
-                    ></div>
-                    <span
-                      class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
-                      >Insert spaces</span
-                    >
+                    <div class="toggle-switch"></div>
+                    <span class="sr-only"> Insert spaces </span>
                   </label>
-                  <label class="inline-flex items-center cursor-pointer">
+                </div>
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      Contract triples
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Join triples on one subject using ;
+                    </span>
+                  </div>
+                  <label class="cursor-pointer">
                     <input
                       id="settings-editor-format-contractTriples"
                       type="checkbox"
                       value=""
                       class="sr-only peer"
                     />
-                    <div
-                      class="relative w-9 h-5 bg-neutral-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"
-                    ></div>
-                    <span
-                      class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
-                      >Contract triples</span
-                    >
+                    <div class="toggle-switch"></div>
+                    <span class="sr-only">Contract triples</span>
                   </label>
-                  <label class="inline-flex items-center cursor-pointer">
+                </div>
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      Keep empty lines
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Preserve blank lines you added when reformatting.
+                    </span>
+                  </div>
+                  <label class="cursor-pointer">
                     <input
                       id="settings-editor-format-keepEmptyLines"
                       type="checkbox"
                       value=""
                       class="sr-only peer"
                     />
-                    <div
-                      class="relative w-9 h-5 bg-neutral-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"
-                    ></div>
-                    <span
-                      class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
-                      >Keep empty lines</span
-                    >
+                    <div class="toggle-switch"></div>
+                    <span class="sr-only"> Keep empty lines </span>
                   </label>
-                  <label class="inline-flex items-center cursor-pointer">
-                    <input
-                      type="text"
-                      data-type="number"
-                      inputmode="numeric"
-                      id="settings-editor-format-tabSize"
-                      aria-describedby="helper-text-explanation"
-                      class="block w-9 px-1 rounded bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body"
-                      placeholder="2"
-                      required
-                    />
+                </div>
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
                     <span
-                      class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
                     >
                       Tab size
                     </span>
-                  </label>
-                  <label class="inline-flex items-center cursor-pointer">
-                    <input
-                      type="text"
-                      data-type="number"
-                      inputmode="numeric"
-                      id="settings-editor-format-compact"
-                      class="block w-9 px-1 rounded bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body"
-                      placeholder="-"
-                    />
                     <span
-                      class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Number of spaces per indentation level.
+                    </span>
+                  </div>
+                  <input
+                    id="settings-editor-format-tabSize"
+                    class="text-black dark:text-white bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-800 rounded text-md p-2 w-25 min-w-0 shrink-0 text-end"
+                    type="text"
+                    inputmode="numeric"
+                    placeholder="2"
+                    required
+                    name="tabSize"
+                    value=""
+                  />
+                </div>
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
                     >
                       Compact
                     </span>
-                  </label>
-                  <label class="inline-flex items-center cursor-pointer">
-                    <input
-                      type="text"
-                      data-type="number"
-                      inputmode="numeric"
-                      id="settings-editor-format-lineLength"
-                      class="block w-12 px-1 rounded bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body"
-                      placeholder="120"
-                      required
-                    />
                     <span
-                      class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Collapse short groups onto a single line.
+                    </span>
+                  </div>
+                  <input
+                    id="settings-editor-format-compact"
+                    class="text-black dark:text-white bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-800 rounded text-md p-2 w-25 min-w-0 shrink-0 text-end"
+                    type="text"
+                    data-type="number"
+                    inputmode="numeric"
+                    placeholder="—"
+                    value=""
+                    required
+                  />
+                </div>
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
                     >
                       Line length
                     </span>
-                  </label>
-                </div>
-              </div>
-              <div>
-                <div
-                  class="flex flex-col items-center text-md font-bold mx-1 md:mx-3"
-                >
-                  <span class="text-md text-center">Completion</span>
-                  <div
-                    class="w-full my-3 border-b border-neutral-400 dark:border-neutral-200"
-                  ></div>
-                  <div class="flex flex-col gap-2 items-start w-min">
-                    <label class="inline-flex items-center cursor-pointer">
-                      <input
-                        type="text"
-                        id="settings-editor-completion-timeoutMs"
-                        aria-describedby="helper-text-explanation"
-                        class="block w-14 px-1 rounded bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body"
-                        placeholder="5000"
-                        required
-                      />
-                      <span
-                        class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
-                      >
-                        Query timeout (ms)
-                      </span>
-                    </label>
-                    <label class="inline-flex items-center cursor-pointer">
-                      <input
-                        type="text"
-                        id="settings-editor-completion-resultSizeLimit"
-                        aria-describedby="helper-text-explanation"
-                        class="block w-14 px-1 rounded bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body"
-                        placeholder="100"
-                        required
-                      />
-                      <span
-                        class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
-                      >
-                        Result size
-                      </span>
-                    </label>
-                    <label class="inline-flex items-center cursor-pointer">
-                      <input
-                        type="text"
-                        id="settings-editor-completion-subjectCompletionTriggerLength"
-                        aria-describedby="helper-text-explanation"
-                        class="block w-14 px-1 rounded bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body"
-                        placeholder="3"
-                        required
-                      />
-                      <span
-                        class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
-                      >
-                        Online char threshold
-                      </span>
-                    </label>
-                    <label class="inline-flex items-center cursor-pointer">
-                      <input
-                        id="settings-editor-completion-objectCompletionSuffix"
-                        type="checkbox"
-                        value=""
-                        class="sr-only peer"
-                      />
-                      <div
-                        class="relative w-9 h-5 bg-neutral-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"
-                      ></div>
-                      <span
-                        class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
-                      >
-                        Object completion suffix
-                      </span>
-                    </label>
-                    <label class="inline-flex items-center cursor-pointer">
-                      <input
-                        id="settings-editor-completion-sameSubjectSemicolon"
-                        type="checkbox"
-                        value=""
-                        class="sr-only peer"
-                      />
-                      <div
-                        class="relative w-9 h-5 bg-neutral-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"
-                      ></div>
-                      <span
-                        class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
-                      >
-                        Same subject semicolon
-                      </span>
-                    </label>
-                    <label class="inline-flex items-center cursor-pointer">
-                      <input
-                        type="text"
-                        id="settings-editor-completion-variableCompletionLimit"
-                        aria-describedby="helper-text-explanation"
-                        class="block w-14 px-1 rounded bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body"
-                        placeholder=""
-                      />
-                      <span
-                        class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
-                      >
-                        Max variables
-                      </span>
-                    </label>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Wrap lines longer than this many characters.
+                    </span>
                   </div>
-                </div>
-                <div
-                  class="flex flex-col items-center text-md font-bold mt-3 mx-1 md:mx-3"
-                >
-                  <span class="text-md text-center">Miscellaneous</span>
-                  <div
-                    class="w-full my-3 border-b border-neutral-400 dark:border-neutral-200"
-                  ></div>
-
-                  <div class="flex flex-col gap-2 items-start w-min">
-                    <label class="inline-flex items-center cursor-pointer">
-                      <input
-                        id="settings-editor-prefixes-addMissing"
-                        type="checkbox"
-                        value=""
-                        class="sr-only peer"
-                      />
-                      <div
-                        class="relative w-9 h-5 bg-neutral-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-0.5 after:insert-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"
-                      ></div>
-                      <span
-                        class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
-                        >Add missing prefixes</span
-                      >
-                    </label>
-                    <label class="inline-flex items-center cursor-pointer">
-                      <input
-                        id="settings-editor-prefixes-removeUnused"
-                        type="checkbox"
-                        value=""
-                        class="sr-only peer"
-                      />
-                      <div
-                        class="relative w-9 h-5 bg-neutral-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"
-                      ></div>
-                      <span
-                        class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
-                        >Remove unused prefixes</span
-                      >
-                    </label>
-                    <label class="items-center cursor-pointer hidden">
-                      <input
-                        id="vimMode"
-                        type="checkbox"
-                        value=""
-                        class="sr-only peer"
-                      />
-                      <div
-                        class="relative w-9 h-5 bg-neutral-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"
-                      ></div>
-                      <span
-                        class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
-                        >Vim mode</span
-                      >
-                    </label>
-                    <label class="inline-flex items-center cursor-pointer">
-                      <input
-                        id="settings-editor-jumpWithTab"
-                        type="checkbox"
-                        value=""
-                        class="sr-only peer"
-                      />
-                      <div
-                        class="relative w-9 h-5 bg-neutral-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"
-                      ></div>
-                      <span
-                        class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
-                        >Jump with tab</span
-                      >
-                    </label>
-                    <label class="inline-flex items-center cursor-pointer">
-                      <input
-                        id="settings-editor-autoLineBreak"
-                        type="checkbox"
-                        value=""
-                        class="sr-only peer"
-                      />
-                      <div
-                        class="relative w-9 h-5 bg-neutral-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"
-                      ></div>
-                      <span
-                        class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
-                        >Auto line break</span
-                      >
-                    </label>
-                  </div>
+                  <input
+                    id="settings-editor-format-lineLength"
+                    class="text-black dark:text-white bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-800 rounded text-md p-2 w-25 min-w-0 shrink-0 text-end"
+                    type="text"
+                    data-type="number"
+                    inputmode="numeric"
+                    placeholder="120"
+                    value=""
+                    required
+                  />
                 </div>
               </div>
             </div>
-          </div>
-          <div
-            class="mt-5 mx-2 md:mx-5 flex flex-col items-center text-md font-bold"
-          >
-            <span class="text-md text-center">Results</span>
-            <div
-              class="w-full my-3 border-b border-neutral-400 dark:border-neutral-200"
-            ></div>
-
-            <div class="flex flex-col gap-2 w-min">
-              <label class="inline-flex items-center cursor-pointer">
-                <input
-                  id="settings-results-typeAnnotations"
-                  type="checkbox"
-                  value=""
-                  class="sr-only peer"
-                />
-                <div
-                  class="relative w-9 h-5 bg-neutral-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"
-                ></div>
-                <span
-                  class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
-                  >Type annotations</span
-                >
-              </label>
-              <label class="inline-flex items-center cursor-pointer">
-                <input
-                  id="settings-results-langAnnotations"
-                  type="checkbox"
-                  value=""
-                  class="sr-only peer"
-                />
-                <div
-                  class="relative w-9 h-5 bg-neutral-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"
-                ></div>
-                <span
-                  class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
-                  >Language annotations</span
-                >
-              </label>
-              <label class="inline-flex items-center cursor-pointer">
-                <input
-                  id="settings-results-loadImages"
-                  type="checkbox"
-                  value=""
-                  class="sr-only peer"
-                />
-                <div
-                  class="relative w-9 h-5 bg-neutral-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"
-                ></div>
-                <span
-                  class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
-                  >Load images</span
-                >
-              </label>
-              <label class="inline-flex items-center cursor-pointer">
-                <input
-                  id="settings-results-shortenIris"
-                  type="checkbox"
-                  value=""
-                  class="sr-only peer"
-                />
-                <div
-                  class="relative w-9 h-5 bg-neutral-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-buffer after:content-[''] after:absolute after:top-0.5 after:inset-s-0.5 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"
-                ></div>
-                <span
-                  class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
-                  >Shorten IRIs</span
-                >
-              </label>
-              <label class="inline-flex items-center cursor-pointer">
-                <input
-                  type="text"
-                  data-type="number"
-                  inputmode="numeric"
-                  id="settings-results-limit"
-                  aria-describedby="helper-text-explanation"
-                  class="block w-12 px-1 rounded bg-neutral-secondary-medium border border-default-medium text-heading text-sm rounded-base focus:ring-brand focus:border-brand shadow-xs placeholder:text-body"
-                  placeholder="2"
-                  required
-                />
-                <span
-                  class="select-none ms-3 text-sm font-medium text-heading whitespace-nowrap"
-                  >Limit</span
-                >
-              </label>
+            <div id="settingsCompletion" class="hidden">
+              <div
+                class="border-b w-full pb-3 border-neutral-200 dark:border-neutral-800 text-neutral-500 font-semibold"
+              >
+                COMPLETION
+              </div>
+              <div
+                class="flex flex-col divide-y divide-neutral-200 dark:divide-neutral-800"
+              >
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      Query timeout (ms)
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Abort a suggestion request that takes longer than this.
+                    </span>
+                  </div>
+                  <input
+                    id="settings-editor-completion-timeoutMs"
+                    class="text-black dark:text-white bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-800 rounded text-md p-2 w-25 min-w-0 shrink-0 text-end"
+                    type="text"
+                    inputmode="numeric"
+                    placeholder="2"
+                    required
+                    name="tabSize"
+                    value=""
+                  />
+                </div>
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      Result size
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      How many suggestions to request per completion.
+                    </span>
+                  </div>
+                  <input
+                    id="settings-editor-completion-resultSizeLimit"
+                    class="text-black dark:text-white bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-800 rounded text-md p-2 w-25 min-w-0 shrink-0 text-end"
+                    type="text"
+                    inputmode="numeric"
+                    placeholder="2"
+                    required
+                    name="tabSize"
+                    value=""
+                  />
+                </div>
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      Online char threshold
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Characters to type before asking the endpoint for
+                      suggestions.
+                    </span>
+                  </div>
+                  <input
+                    id="settings-editor-completion-subjectCompletionTriggerLength"
+                    class="text-black dark:text-white bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-800 rounded text-md p-2 w-25 min-w-0 shrink-0 text-end"
+                    type="text"
+                    inputmode="numeric"
+                    placeholder="2"
+                    required
+                    name="tabSize"
+                    value=""
+                  />
+                </div>
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      Object completion suffix
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Append a closing brace or dot after inserting an object.
+                    </span>
+                  </div>
+                  <label class="cursor-pointer">
+                    <input
+                      id="settings-editor-completion-objectCompletionSuffix"
+                      type="checkbox"
+                      value=""
+                      class="sr-only peer"
+                    />
+                    <div class="toggle-switch"></div>
+                    <span class="sr-only">Object completion suffix</span>
+                  </label>
+                </div>
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      Same subject semicolon
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Continue with ; when the next triple shares the subject.
+                    </span>
+                  </div>
+                  <label class="cursor-pointer">
+                    <input
+                      id="settings-editor-completion-sameSubjectSemicolon"
+                      type="checkbox"
+                      value=""
+                      class="sr-only peer"
+                    />
+                    <div class="toggle-switch"></div>
+                    <span class="sr-only"> Same subject semicolon </span>
+                  </label>
+                </div>
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      Max variables
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Upper bound on variables considered while completing.
+                    </span>
+                  </div>
+                  <input
+                    id="settings-editor-completion-variableCompletionLimit"
+                    class="text-black dark:text-white bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-800 rounded text-md p-2 w-25 min-w-0 shrink-0 text-end"
+                    type="text"
+                    inputmode="numeric"
+                    placeholder="2"
+                    required
+                    name="tabSize"
+                    value=""
+                  />
+                </div>
+              </div>
+            </div>
+            <div id="settingsMiscellaneous" class="hidden">
+              <div
+                class="border-b w-full pb-3 border-neutral-200 dark:border-neutral-800 text-neutral-500 font-semibold"
+              >
+                MISCELLANEOUS
+              </div>
+              <div
+                class="flex flex-col divide-y divide-neutral-200 dark:divide-neutral-800"
+              >
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      Add missing prefixes
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Insert PREFIX declarations for IRIs you use.
+                    </span>
+                  </div>
+                  <label class="cursor-pointer">
+                    <input
+                      id="settings-editor-prefixes-addMissing"
+                      type="checkbox"
+                      value=""
+                      class="sr-only peer"
+                    />
+                    <div class="toggle-switch"></div>
+                    <span class="sr-only">Object completion suffix</span>
+                  </label>
+                </div>
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      Remove unused prefixes
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Strip PREFIX declarations the query never references.
+                    </span>
+                  </div>
+                  <label class="cursor-pointer">
+                    <input
+                      id="settings-editor-prefixes-removeUnused"
+                      type="checkbox"
+                      value=""
+                      class="sr-only peer"
+                    />
+                    <div class="toggle-switch"></div>
+                    <span class="sr-only">Object completion suffix</span>
+                  </label>
+                </div>
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      Jump with tab
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Tab moves the cursor to the next placeholder.
+                    </span>
+                  </div>
+                  <label class="cursor-pointer">
+                    <input
+                      id="settings-editor-jumpWithTab"
+                      type="checkbox"
+                      value=""
+                      class="sr-only peer"
+                    />
+                    <div class="toggle-switch"></div>
+                    <span class="sr-only">Object completion suffix</span>
+                  </label>
+                </div>
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      Auto line break
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Wrap long lines in the editor instead of scrolling.
+                    </span>
+                  </div>
+                  <label class="cursor-pointer">
+                    <input
+                      id="settings-editor-autoLineBreak"
+                      type="checkbox"
+                      value=""
+                      class="sr-only peer"
+                    />
+                    <div class="toggle-switch"></div>
+                    <span class="sr-only">Object completion suffix</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div id="settingsResults" class="hidden">
+              <div
+                class="border-b w-full pb-3 border-neutral-200 dark:border-neutral-800 text-neutral-500 font-semibold"
+              >
+                RESULTS
+              </div>
+              <div
+                class="flex flex-col divide-y divide-neutral-200 dark:divide-neutral-800"
+              >
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      Type annotations
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Show the datatype next to literal values.
+                    </span>
+                  </div>
+                  <label class="cursor-pointer">
+                    <input
+                      id="settings-results-typeAnnotations"
+                      type="checkbox"
+                      value=""
+                      class="sr-only peer"
+                    />
+                    <div class="toggle-switch"></div>
+                    <span class="sr-only">Type annotations</span>
+                  </label>
+                </div>
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      Language annotations
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Show the language tag next to labels.
+                    </span>
+                  </div>
+                  <label class="cursor-pointer">
+                    <input
+                      id="settings-results-langAnnotations"
+                      type="checkbox"
+                      value=""
+                      class="sr-only peer"
+                    />
+                    <div class="toggle-switch"></div>
+                    <span class="sr-only">Language annotations</span>
+                  </label>
+                </div>
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      Load images
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Render image IRIs as thumbnails in the table.
+                    </span>
+                  </div>
+                  <label class="cursor-pointer">
+                    <input
+                      id="settings-results-loadImages"
+                      type="checkbox"
+                      value=""
+                      class="sr-only peer"
+                    />
+                    <div class="toggle-switch"></div>
+                    <span class="sr-only">Load images</span>
+                  </label>
+                </div>
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      Shorten IRIs
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Display known IRIs with their prefix.
+                    </span>
+                  </div>
+                  <label class="cursor-pointer">
+                    <input
+                      id="settings-results-shortenIris"
+                      type="checkbox"
+                      value=""
+                      class="sr-only peer"
+                    />
+                    <div class="toggle-switch"></div>
+                    <span class="sr-only">Shorten IRIs</span>
+                  </label>
+                </div>
+                <div class="flex flex-row py-4 items-center">
+                  <div class="flex flex-col grow">
+                    <span
+                      class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
+                    >
+                      Limit
+                    </span>
+                    <span
+                      class="font-normal text-neutral-400 dark:text-neutral-500"
+                    >
+                      Rows to show per page of results.
+                    </span>
+                  </div>
+                  <input
+                    id="settings-results-limit"
+                    class="text-black dark:text-white bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-800 rounded text-md p-2 w-25 min-w-0 shrink-0 text-end"
+                    type="text"
+                    inputmode="numeric"
+                    placeholder="10"
+                    required
+                    value=""
+                  />
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </dialog>
     <!-- The Command Prompt Modal -->
-    <div
+    <dialog
       id="commandPromptModal"
-      class="fixed z-20 left-0 top-0 w-full h-full overflow-auto bg-white/20 dark:bg-black/10 backdrop-blur-xs flex flex-col justify-center hidden"
+      class="dialog-backdrop flex-col items-center"
     >
-      <div class="h-4/5 w-full flex flex-col items-center justify-top">
+      <div class="mt-[12vh] w-140 max-w-full px-4">
         <div
-          class="border rounded z-30 border-neutral-400 dark:border-neutral-600 shadow bg-neutral-200/60 dark:bg-neutral-500/60 text-neutral-500 dark:text-neutral-300 w-130 flex flex-col overflow-hidden"
+          data-dialog-content
+          id="commandPromptPanel"
+          class="dialog-panel overflow-hidden"
         >
-          <div class="relative">
-            <input
-              id="commandPrompt"
-              type="text"
-              class="w-full border-neutral-400 dark:border-neutral-700 flex justify-center font-mono p-3 ps-6 focus:outline-none"
-            />
+          <div class="flex items-center gap-2 px-4 py-3">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
-              class="absolute top-1/4 left-0 size-5 font-bold stroke-2"
+              stroke-width="2"
+              class="w-4 h-4 shrink-0 text-neutral-400"
             >
               <path
                 stroke-linecap="round"
@@ -2373,9 +2927,16 @@
                 d="m8.25 4.5 7.5 7.5-7.5 7.5"
               />
             </svg>
+            <input
+              id="commandPrompt"
+              type="text"
+              placeholder="Type a command"
+              class="w-full bg-transparent font-mono text-sm text-neutral-800 dark:text-neutral-100 placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:outline-none"
+            />
+            <kbd class="kbd">esc</kbd>
           </div>
         </div>
       </div>
-    </div>
+    </dialog>
   </body>
 </html>

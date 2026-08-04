@@ -8,13 +8,17 @@ import { debounce } from '../utils';
 import { highlightMatches, matchesAllKeywords, parseKeywords } from '../utils/fuzzy_filter';
 
 export function setupKeywordSearch() {
-  const examplesModal = document.getElementById('examplesModal')!;
   const examplesList = document.getElementById('examplesList')! as HTMLUListElement;
   const keywordSearchInput = document.getElementById(
     'examplesKeywordSearchInput'
   )! as HTMLInputElement;
 
-  const hoverClasses: string[] = ['bg-neutral-500', 'dark:bg-neutral-700', 'text-white'];
+  const hoverClasses: string[] = [
+    'bg-neutral-100',
+    'dark:bg-neutral-800',
+    'text-neutral-900',
+    'dark:text-neutral-100',
+  ];
   const highlightClasses: string[] = ['text-green-600', 'dark:text-green-500', 'underline'];
 
   // This variable contains the actual example spans that match the query.
@@ -25,10 +29,6 @@ export function setupKeywordSearch() {
 
   // NOTE: Keyboard navigation:
   keywordSearchInput.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') {
-      examplesModal.classList.add('hidden');
-      cleanup();
-    }
     if (examplesFiltered.length > 0) {
       if (event.key === 'ArrowDown') {
         if (selectedExample >= 0) {

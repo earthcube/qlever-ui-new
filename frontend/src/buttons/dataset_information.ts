@@ -1,34 +1,38 @@
+import { closeDialog, openDialog, setupDialog } from '../dialogs';
 import type { Editor } from '../editor/init';
 import type { QlueLsServiceConfig } from '../types/backend';
 import { SparqlEngine } from '../types/lsp_messages';
 
 export async function setupDatasetInformation(editor: Editor) {
-  const datasetInformationModal = document.getElementById('datasetInformationModal')!;
-  const datasetInformationContainer = document.getElementById('datasetInformationContainer')!;
   const datasetInformationButton = document.getElementById('datasetInformationButton')!;
+
+  setupDialog('datasetInformationModal');
 
   datasetInformationButton.addEventListener('click', async () => {
     openDatasetInformation(editor);
   });
 
-  datasetInformationModal.addEventListener('click', () => {
+  document.getElementById('datasetInformationClose')!.addEventListener('click', () => {
     closeDatasetInformation();
   });
 
-  datasetInformationContainer.addEventListener('click', (e) => {
-    e.stopPropagation();
+  document.getElementById('datasetUrlCopy')!.addEventListener('click', () => {
+    navigator.clipboard.writeText(document.getElementById('datasetUrl')!.innerText);
+    document.dispatchEvent(
+      new CustomEvent('toast', {
+        detail: { type: 'success', message: 'Copied to clipboard', duration: 2000 },
+      })
+    );
   });
 }
 
 export async function openDatasetInformation(editor: Editor) {
-  const datasetInformationModal = document.getElementById('datasetInformationModal')!;
   await loadDatasetInformation(editor);
-  datasetInformationModal.classList.remove('hidden');
+  openDialog('datasetInformationModal');
 }
 
 export function closeDatasetInformation() {
-  const datasetInformationModal = document.getElementById('datasetInformationModal')!;
-  datasetInformationModal.classList.add('hidden');
+  closeDialog('datasetInformationModal');
 }
 
 async function loadDatasetInformation(editor: Editor): Promise<void> {
@@ -41,6 +45,9 @@ async function loadDatasetInformation(editor: Editor): Promise<void> {
   const datasetNumberOfSubjects = document.getElementById('datasetNumberOfSubjects')!;
   const datasetNumberOfPredicates = document.getElementById('datasetNumberOfPredicates')!;
   const datasetNumberOfObjects = document.getElementById('datasetNumberOfObjects')!;
+  const datasetEndpointVersion = document.getElementById('datasetEndpointVersion')!;
+  const datasetEndpointServerHash = document.getElementById('datasetEndpointServerHash')!;
+  const datasetEndpointIndexHash = document.getElementById('datasetEndpointIndexHash')!;
   if ('error' in service) {
     throw new Error('No backend was configured.');
   }
@@ -62,5 +69,8 @@ async function loadDatasetInformation(editor: Editor): Promise<void> {
       datasetNumberOfSubjects.innerText = stats['num-subjects-normal'].toLocaleString('en-US');
       datasetNumberOfPredicates.innerText = stats['num-predicates-normal'].toLocaleString('en-US');
       datasetNumberOfObjects.innerText = stats['num-objects-normal'].toLocaleString('en-US');
+      datasetEndpointVersion.innerText = stats['version-server'];
+      datasetEndpointServerHash.innerText = stats['git-hash-server'];
+      datasetEndpointIndexHash.innerText = stats['git-hash-index'];
     });
 }
