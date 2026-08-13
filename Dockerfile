@@ -5,6 +5,7 @@ WORKDIR /app
 
 ARG GIT_COMMIT
 ENV VITE_GIT_COMMIT=${GIT_COMMIT}
+ENV CONFIG_PATH=configs
 
 COPY frontend/package*.json ./
 RUN npm ci
@@ -41,6 +42,7 @@ WORKDIR /app
 COPY --from=builder /app/.venv .venv/
 COPY --chown=appuser:appuser backend/src/api api/
 COPY --chown=appuser:appuser backend/examples examples/
+COPY --chown=appuser:appuser backend/configs configs/
 COPY --from=frontend /app/dist frontend_dist/
 COPY --chown=appuser:appuser config.default.yaml config.yaml
 
