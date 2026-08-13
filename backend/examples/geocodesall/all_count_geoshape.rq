@@ -1,0 +1,13 @@
+PREFIX schema: <https://schema.org/>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX geof: <http://www.opengis.net/def/function/geosparql/>
+Select   ?geotype (count(distinct ?geo) as ?geocount) (count(distinct ?s) as ?objectcount)
+  WHERE {
+    ?s a schema:Dataset .
+    ?s schema:spatialCoverage ?spatialcoverage .
+    ?spatialcoverage schema:geo ?geo .
+    ?geo a schema:GeoShape .
+    ?geo ?geotype ?shape
+}
+GROUP By ?geotype
