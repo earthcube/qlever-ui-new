@@ -1,0 +1,12 @@
+# needs work... keywords can be an array.
+## double dollar signes are to escape to a single dollar sign when using string template
+prefix schema: <https://schema.org/>
+SELECT  ?keyword (count(distinct ?s) as ?scount) ?repo
+WHERE {
+ GRAPH ?g {
+           ?s schema:keywords ?keyword .
+           bind(  REPLACE(REPLACE( STR(?g) ,"urn:(?:\\w+):" ,"" ), ":\\w+$$" , "")   as ?repo ) .
+           }
+      }
+GROUP By ?keyword ?repo
+ORDER By DESC(?scount)

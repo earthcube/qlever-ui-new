@@ -4,38 +4,64 @@ wikidata:
   default: false
   engine: QLever
   preset: [common_prefixes, qlever_default]
-facetsearch:
-  name: facetsearch
-  url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/facetsearch
+geocodesall:
+  name: geocodesall
+  url: https://qlever.geocodes-aws.earthcube.org/graphspace/geocodesall
   default: true
   engine: QLever
 deepocean:
   name: deepocean
-  url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/deepoceans
+  url: https://qlever.geocodes-aws.earthcube.org/graphspace/deepoceans
   default: false
   engine: QLever
 
 ecoforecast:
   name: EcoForecast
-  url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/ecoforecast
+  url: https://qlever.geocodes-aws.earthcube.org/graphspace/ecoforecast
   default: false
   engine: QLever
 ecrr:
   name: EarthCube Research Resource Registry
-  url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/ecrr
-  default: false
-  engine: QLever
-geocodesexamples:
-  name: Geocodes Demo Data
-  url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/geocodesexamples
+  url: https://qlever.geocodes-aws.earthcube.org/graphspace/ecrr
   default: false
   engine: QLever
 earthsurface:
   name: earthsurface
+  url: https://qlever.geocodes-aws.earthcube.org/graphspace/earthsurface
+  default: false
+  engine: QLever
+dev-facetsearch:
+  name: facetsearch
+  url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/facetsearch
+  default: true
+  engine: QLever
+dev-deepocean:
+  name: deepocean
+  url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/deepoceans
+  default: false
+  engine: QLever
+
+dev-ecoforecast:
+  name: EcoForecast
+  url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/ecoforecast
+  default: false
+  engine: QLever
+dev-ecrr:
+  name: EarthCube Research Resource Registry
+  url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/ecrr
+  default: false
+  engine: QLever
+dev-geocodesexamples:
+  name: Geocodes Demo Data
+  url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/geocodesexamples
+  default: false
+  engine: QLever
+dev-earthsurface:
+  name: earthsurface
   url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/earthsurface
   default: false
   engine: QLever
-test:
+dev-test:
   name: test
   url: https://qlever.geocodes-aws-dev.earthcube.org/graphspace/test
   default: false

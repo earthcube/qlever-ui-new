@@ -1,0 +1,20 @@
+## double dollar signes are to escape to a single dollar sign when using string template
+## Graphs do not always equal datasets. Especially in non-Earthcube graph stores
+SELECT   ?repo (COUNT(distinct ?g) as ?graphs) (COUNT(*) as ?triples)
+WHERE     {
+  GRAPH ?g {
+      ?s ?p ?o .
+       bind(  REPLACE(REPLACE( STR(?g) ,"urn:(?:\\w+):" ,"" ), ":\\w+$$" , "")   as ?repo )
+   }
+}
+group by ?repo
+
+## the regesx replace grabs the first portioon, replaces it with nothing,
+## then grabs the last part and replaces it with nothing,
+## NOTE: double \\ the escape sequeqnce akd \w+ becomes \\w+
+#((\w+):(\w+))$$
+#(?2)(:(\w+))
+
+##<urn:gleaner:summoned:opentopography:0024e35144d902d8b413ffd400ede6a27efe2146>
+# urn:\w+:summoned:(\w+)
+#urn:(?:\w+):summoned:(\w+)
