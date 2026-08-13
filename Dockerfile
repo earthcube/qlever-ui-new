@@ -34,7 +34,7 @@ RUN uv sync --locked --no-install-project --no-dev
 FROM python:3.14-slim
 
 RUN useradd -m -r -u 1000 appuser && \
-    mkdir /app && \
+    mkdir /app && mkdir /app/data && \
     chown -R appuser /app
 
 WORKDIR /app
