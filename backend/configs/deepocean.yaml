@@ -1,0 +1,5 @@
+
+name: deepocean
+url: https://qlever.geocodes-aws.earthcube.org/graphspace/deepoceans
+default: false
+engine: QLever

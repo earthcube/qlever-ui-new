@@ -1,0 +1,5 @@
+
+name: geocodesall
+url: https://qlever.geocodes-aws.earthcube.org/graphspace/geocodesall
+default: true
+engine: QLever
