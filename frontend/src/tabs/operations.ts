@@ -1,5 +1,5 @@
 // ┌─────────────────────────────────┐ \\
-// │ Copyright © 2025 Ioannis Nezis  │ \\
+// │ Copyright © 2026 Ioannis Nezis  │ \\
 // ├─────────────────────────────────┤ \\
 // │ Licensed under the MIT license. │ \\
 // └─────────────────────────────────┘ \\
@@ -113,6 +113,7 @@ export function renameTab(tabId: string, name: string): void {
   if (trimmed) {
     tab.name = trimmed;
     tab.exampleOrigin = undefined;
+    tab.exampleChanged = false;
   }
   saveState();
 }

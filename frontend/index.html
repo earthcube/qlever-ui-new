@@ -7,7 +7,7 @@
     <link rel="icon" type="image/svg+xml" href="src/assets/logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link href="/src/style.css" rel="stylesheet" />
-    <title>QLever UI</title>
+    <title>Qlue-UI</title>
     <script type="module" src="/src/main.ts" defer></script>
   </head>
   <body
@@ -431,36 +431,137 @@
               id="templatePanel"
               class="h-full flex-1 hidden flex-col overflow-hidden rounded border border-button-border bg-white dark:bg-neutral-800"
             >
+              <!-- NOTE: Identity + close only. Commit actions (Save) sit against the
+                   editor they commit, which keeps this bar identical to Parse Tree's. -->
               <div
-                class="flex items-center justify-between px-3 py-1.5 border-b border-button-border bg-slate-100 dark:bg-slate-700 text-xs font-semibold"
+                class="flex items-center gap-2 px-3 py-1.5 border-b border-button-border bg-slate-100 dark:bg-slate-700 text-xs font-semibold"
               >
                 <span>Completion Templates</span>
-                <div class="flex items-center gap-2">
-                  <button
-                    type="button"
-                    id="templatePanelSave"
-                    class="hover:text-green-600 cursor-pointer"
-                    title="Save to database"
-                  >
-                    Save
+                <span
+                  id="templatePanelBackend"
+                  class="font-normal text-gray-500 dark:text-gray-400"
+                ></span>
+                <button
+                  type="button"
+                  id="templatePanelClose"
+                  class="ml-auto hover:text-red-500 cursor-pointer"
+                >
+                  ✕
+                </button>
+              </div>
+              <!-- NOTE: Tabs answer "what am I editing"; the ctx switch absorbs the
+                   "(ctx)" template variants instead of doubling the tab count. -->
+              <div
+                class="flex items-stretch gap-0.5 px-2 h-8 border-b border-button-border text-xs"
+              >
+                <div id="templateTabs" class="flex items-stretch gap-0.5"></div>
+                <div
+                  id="templateCtxToggle"
+                  class="hidden ml-auto self-center segment-group segment-group-compact"
+                >
+                  <button type="button" class="segment-item" data-ctx="1">
+                    ctx
                   </button>
-                  <button
-                    type="button"
-                    id="templatePanelClose"
-                    class="hover:text-red-500 cursor-pointer"
-                  >
-                    ✕
+                  <button type="button" class="segment-item" data-ctx="0">
+                    plain
                   </button>
                 </div>
               </div>
               <div
-                id="templateSelector"
-                class="flex flex-wrap gap-1 px-2 py-2 border-b border-gray-300 dark:border-gray-600 text-xs"
-              ></div>
-              <div
                 id="templateEditorContainer"
                 class="flex-1 min-h-0 overflow-hidden"
               ></div>
+              <div
+                class="flex items-center gap-2 px-2 py-1 border-t border-gray-200 dark:border-gray-700 text-[11px]"
+              >
+                <span class="flex items-center gap-1.5">
+                  <span
+                    id="templateDirtyDot"
+                    class="w-1.5 h-1.5 rounded-full bg-amber-500"
+                  ></span>
+                  <span
+                    id="templateDirtyLabel"
+                    class="text-gray-500 dark:text-gray-400"
+                  ></span>
+                </span>
+                <span class="w-px h-3 bg-gray-300 dark:bg-gray-600"></span>
+                <span
+                  id="templateApplied"
+                  class="text-gray-400 dark:text-gray-500 truncate"
+                ></span>
+                <button
+                  type="button"
+                  id="templatePanelSave"
+                  class="ml-auto shrink-0 px-2.5 py-0.5 rounded bg-green-600 hover:bg-green-700 text-white font-semibold cursor-pointer"
+                  title="Save to database"
+                >
+                  Save
+                </button>
+              </div>
+              <!-- NOTE: Runs are docked under the editor rather than behind a view
+                   switch, so a broken edit shows up in view seconds later. -->
+              <div
+                id="templateRunsContainer"
+                class="flex flex-col border-t border-button-border"
+                style="height: 11rem"
+              >
+                <div
+                  id="templateRunsResize"
+                  class="h-1 shrink-0 cursor-row-resize"
+                  title="Drag to resize"
+                ></div>
+                <div
+                  class="flex items-center gap-2 px-2 pb-1 text-[11px] whitespace-nowrap"
+                >
+                  <button
+                    type="button"
+                    id="templateRunsToggle"
+                    class="flex items-center gap-1.5 font-semibold cursor-pointer"
+                  >
+                    <svg
+                      id="templateRunsChevron"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.4"
+                      stroke-linecap="round"
+                      class="w-2.5 h-2.5 text-gray-500 dark:text-gray-400"
+                    >
+                      <path d="M6 15l6-6 6 6"></path>
+                    </svg>
+                    Runs
+                  </button>
+                  <div
+                    id="templateRunsScope"
+                    class="segment-group segment-group-compact"
+                  >
+                    <button
+                      type="button"
+                      id="templateRunsScopeThis"
+                      class="segment-item"
+                      data-scope="this"
+                    ></button>
+                    <button type="button" class="segment-item" data-scope="all">
+                      All
+                    </button>
+                  </div>
+                  <span
+                    id="templateRunsCount"
+                    class="text-gray-500 dark:text-gray-400"
+                  ></span>
+                  <button
+                    type="button"
+                    id="templateRunsClear"
+                    class="ml-auto hover:text-red-500 cursor-pointer"
+                  >
+                    Clear
+                  </button>
+                </div>
+                <ul
+                  id="templateRunsList"
+                  class="flex-1 min-h-0 overflow-auto text-[11px]"
+                ></ul>
+              </div>
             </div>
           </div>
           <div class="flex flex-col lg:flex-row gap-2 justify-between">
@@ -652,7 +753,7 @@
             </div>
             <div>
               <div
-                class="grid grid-cols-[6rem_auto_6rem] sm:grid-cols-4 border-button-border border-separate border rounded overflow-clip h-8"
+                class="grid grid-cols-[6rem_auto_6rem] sm:grid-cols-4 border-button-border border-separate border rounded overflow-clip h-16 sm:h-8"
               >
                 <div
                   id="formatButton"
@@ -748,24 +849,230 @@
         </div>
         <div
           id="resultsError"
-          class="rounded bg-red-500/70 dark:bg-red-700/30 border-red-300 dark:border-red-900 border my-5 p-5 hidden"
+          class="rounded bg-white dark:bg-neutral-800 border-red-400 dark:border-red-900 border my-5 group hidden"
+          data-error=""
         >
-          <div class="flex flex-col items-center">
-            <h1
-              id="queryErrorTitle"
-              class="text-center text-xl text-neutral-200 dark:text-red-700 font-bold"
-            >
-              Error processing query
-            </h1>
-            <span
-              id="queryErrorSubtitle"
-              class="text-neutral-200 dark:text-red-400 font-bold mt-3"
-            ></span>
-            <div class="w-full">
-              <pre
-                id="queryErrorQuery"
-                class="rounded bg-neutral-400 mt-4 mx-auto p-2 text-black"
-              ></pre>
+          <div class="flex gap-3 items-start p-4">
+            <div class="text-red-600">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6 hidden group-data-[error=QLeverException]:block"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"
+                />
+              </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6 hidden group-data-[error=Connection]:block"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m3 3 8.735 8.735m0 0a.374.374 0 1 1 .53.53m-.53-.53.53.53m0 0L21 21M14.652 9.348a3.75 3.75 0 0 1 0 5.304m2.121-7.425a6.75 6.75 0 0 1 0 9.546m2.121-11.667c3.808 3.807 3.808 9.98 0 13.788m-9.546-4.242a3.733 3.733 0 0 1-1.06-2.122m-1.061 4.243a6.75 6.75 0 0 1-1.625-6.929m-.496 9.05c-3.068-3.067-3.664-7.67-1.79-11.334M12 12h.008v.008H12V12Z"
+                />
+              </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6 hidden group-data-[error=Canceled]:block"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"
+                />
+              </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6 hidden group-data-[error=Http]:block"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M21.75 17.25v-.228a4.5 4.5 0 0 0-.12-1.03l-2.268-9.64a3.375 3.375 0 0 0-3.285-2.602H7.923a3.375 3.375 0 0 0-3.285 2.602l-2.268 9.64a4.5 4.5 0 0 0-.12 1.03v.228m19.5 0a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3m19.5 0a3 3 0 0 0-3-3H5.25a3 3 0 0 0-3 3m16.5 0h.008v.008h-.008v-.008Zm-3 0h.008v.008h-.008v-.008Z"
+                />
+              </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6 hidden group-data-[error=Deserialization]:block"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
+                />
+              </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6 hidden group-data-[error=Unknown]:block"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 5.25h.008v.008H12v-.008Z"
+                />
+              </svg>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="size-6 hidden group-data-[error=InvalidFormat]:block"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="M12 16.5V9.75m0 0 3 3m-3-3-3 3M6.75 19.5a4.5 4.5 0 0 1-1.41-8.775 5.25 5.25 0 0 1 10.233-2.33 3 3 0 0 1 3.758 3.848A3.752 3.752 0 0 1 18 19.5H6.75Z"
+                />
+              </svg>
+            </div>
+            <div class="flex flex-col pt-0.5 gap-4 flex-1 min-w-0">
+              <div class="hidden group-data-[error=QLeverException]:block">
+                <h1 class="text-black dark:text-white font-semibold text-md">
+                  QLever could not process this query
+                </h1>
+              </div>
+              <div class="hidden group-data-[error=Canceled]:block">
+                <h1 class="text-black dark:text-white font-semibold text-md">
+                  You canceled this query
+                </h1>
+              </div>
+              <div class="hidden group-data-[error=Connection]:block">
+                <h1 class="text-black dark:text-white font-semibold text-md">
+                  Could not reach the SPARQL endpoint.
+                </h1>
+              </div>
+              <div class="hidden group-data-[error=Http]:block">
+                <h1 class="text-black dark:text-white font-semibold text-md">
+                  The endpoint rejected the request with HTTP
+                  <span id="httpErrorStatus"></span>
+                </h1>
+              </div>
+              <div class="hidden group-data-[error=Unknown]:block">
+                <h1 class="text-black dark:text-white font-semibold text-md">
+                  Something went wrong, but we don't know what
+                </h1>
+                <p class="text-neutral-400">
+                  The browser console may hold more details.
+                </p>
+              </div>
+              <div class="hidden group-data-[error=Deserialization]:block">
+                <h1 class="text-black dark:text-white font-semibold text-md">
+                  The result arrived but could not be read
+                </h1>
+                <p class="text-neutral-400">
+                  The query itself may well have succeeded — this failed while
+                  parsing the response.
+                </p>
+              </div>
+              <div class="hidden group-data-[error=InvalidFormat]:block">
+                <h1 class="text-black dark:text-white font-semibold text-md">
+                  The update went through, but its receipt could not be read
+                </h1>
+                <p class="text-neutral-400">
+                  Check the data before running the update a second time.
+                </p>
+              </div>
+              <div
+                class="hidden group-data-[error=QLeverException]:flex flex-col gap-1"
+              >
+                <span class="text-neutral-400 font-bold"> QLever replied </span>
+                <span
+                  id="queryErrorSubtitle"
+                  class="p-0.5 border-s-2 border-red-600 ps-2"
+                >
+                </span>
+              </div>
+              <div
+                class="hidden group-data-[error=Connection]:flex flex-col gap-1"
+              >
+                <span class="text-neutral-400 font-bold"> Common causes </span>
+                <ul class="list-disc ps-5">
+                  <li>The server is down</li>
+                  <li>The endpoint URL is wrong</li>
+                  <li>The request was blocked by the browser (e.g. CORS)</li>
+                </ul>
+                <span class="text-neutral-400 font-bold"> Reason </span>
+                <span
+                  id="connectionErrorReason"
+                  class="p-0.5 border-s-2 border-red-600 ps-2"
+                >
+                </span>
+              </div>
+              <div
+                class="hidden group-data-[error=Deserialization]:flex group-data-[error=InvalidFormat]:flex flex-col gap-1"
+              >
+                <span class="text-neutral-400 font-bold"> Parsing failed </span>
+                <span
+                  id="parseErrorMessage"
+                  class="p-0.5 border-s-2 border-red-600 ps-2"
+                >
+                </span>
+              </div>
+              <div class="hidden group-data-[error=Http]:flex flex-col gap-1">
+                <span class="text-neutral-400 font-bold">
+                  The endpoint replied
+                </span>
+                <pre
+                  id="httpErrorBody"
+                  class="rounded bg-neutral-100 dark:bg-neutral-900 text-black dark:text-neutral-200 p-2 overflow-x-auto"
+                ></pre>
+              </div>
+              <div
+                class="flex flex-col gap-1 group-data-[error=Http]:hidden group-data-[error=Unknown]:hidden"
+              >
+                <span
+                  class="hidden group-data-[error=QLeverException]:block text-neutral-400 font-bold"
+                >
+                  Query send
+                </span>
+                <span
+                  class="hidden group-data-[error=Canceled]:block text-neutral-400 font-bold"
+                >
+                  Query you cancelled
+                </span>
+                <span
+                  class="hidden group-data-[error=Deserialization]:block text-neutral-400 font-bold"
+                >
+                  Query send
+                </span>
+                <span
+                  class="hidden group-data-[error=InvalidFormat]:block text-neutral-400 font-bold"
+                >
+                  Update send
+                </span>
+                <pre
+                  id="queryErrorQuery"
+                  class="rounded bg-neutral-100 dark:bg-neutral-900 text-black dark:text-neutral-200 p-2 overflow-x-auto"
+                ></pre>
+              </div>
             </div>
           </div>
         </div>
@@ -1141,9 +1448,9 @@
               </li>
               <li>
                 <a
-                  href="https://github.com/ad-freiburg/qlue-ui"
+                  href="https://github.com/qlever-dev/qlue-ui"
                   class="text-gray-500 hover:text-sky-600 dark:text-gray-400 dark:hover:text-sky-400"
-                  >QLever UI</a
+                  >Qlue-UI</a
                 >
               </li>
               <li>
@@ -1446,7 +1753,7 @@
       <div
         data-dialog-content
         id="shareWidget"
-        class="dialog-panel relative w-140 max-w-full overflow-hidden"
+        class="dialog-panel relative flex w-140 max-w-full max-h-[90vh] flex-col overflow-hidden"
       >
         <div class="dialog-header">
           <div>
@@ -1472,7 +1779,7 @@
             </svg>
           </button>
         </div>
-        <div class="flex">
+        <div class="flex min-h-0 flex-1">
           <div
             class="w-44 shrink-0 border-r border-neutral-100 dark:border-neutral-800 p-2 space-y-0.5"
             role="radiogroup"
@@ -1499,7 +1806,7 @@
               </svg>
               <span
                 ><span class="rail-item-label">App link</span
-                ><span class="rail-item-hint">Reopen in QLever UI</span></span
+                ><span class="rail-item-hint">Reopen in Qlue-UI</span></span
               >
             </button>
             <button id="shareRawSelectButton" type="button" class="rail-item">
@@ -1534,8 +1841,27 @@
                 ><span class="rail-item-hint">Terminal command</span></span
               >
             </button>
+            <button
+              id="sharePlainQuerySelectButton"
+              type="button"
+              class="rail-item"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                class="w-4 h-4 mt-0.5 shrink-0"
+              >
+                <path d="M4 7h16M4 12h16M4 17h10"></path>
+              </svg>
+              <span
+                ><span class="rail-item-label">Plain query</span
+                ><span class="rail-item-hint">Unescaped, one line</span></span
+              >
+            </button>
           </div>
-          <div class="flex-1 min-w-0 p-4 space-y-3.5">
+          <div class="flex flex-col flex-1 min-w-0 p-4 space-y-3.5">
             <div class="grid">
               <div
                 id="appLinkOptions"
@@ -1643,17 +1969,23 @@
                   </option>
                 </select>
               </div>
+
+              <div id="plainQueryOptions" class="col-start-1 row-start-1 invisible">
+                <span class="text-neutral-800 dark:text-neutral-400 text-xs">
+                  The query itself, unescaped and collapsed into one line.
+                </span>
+              </div>
             </div>
-            <div class="space-y-2">
+            <div class="flex flex-col flex-1 min-h-0 space-y-2">
               <span
                 class="text-xs font-medium text-neutral-500 dark:text-neutral-400"
-                >Result · <span data-type-label="">cURL · GET</span></span
+                >Result · <span id="shareResultLabel">App link</span></span
               >
               <div
-                class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950 p-3 overflow-x-auto"
+                class="flex-1 min-h-0 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950 p-3 overflow-y-auto"
               >
                 <pre
-                  class="font-mono text-[12px] leading-relaxed text-neutral-800 dark:text-neutral-200 whitespace-pre"
+                  class="font-mono text-[12px] leading-relaxed text-neutral-800 dark:text-neutral-200 whitespace-pre-wrap wrap-anywhere"
                 ><code  id="shareResult">curl -s 'https://qlever.cs.uni-freiburg.de/api/wikidata?query=PREFIX%20wd%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fentity%2F%3E%0APREFIX%20wdt%3A%20%3Chttp%3A%2F%2Fwww.wikidata.org%2Fprop%2Fdirect%2F%3E%0ASELECT%20%3Fcity%20%3Fpopulation%20WHERE%20%7B%0A%20%20%3Fcity%20wdt%3AP31%20wd%3AQ515%20.%0A%20%20%3Fcity%20wdt%3AP1082%20%3Fpopulation%20.%0A%7D%0AORDER%20BY%20DESC(%3Fpopulation)%0ALIMIT%20100' \
   -H 'Accept: application/sparql-results+json'</code></pre>
               </div>
@@ -1661,7 +1993,7 @@
             <button
               id="shareCopyButton"
               type="button"
-              class="dialog-button-primary"
+              class="dialog-button-primary shrink-0"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -1840,7 +2172,7 @@
                   class="flex flex-col bg-neutral-50 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 p-3 rounded"
                 >
                   <span
-                    class="text-xl font-bold tabular-nums"
+                    class="text-xl text-black dark:text-white font-bold"
                     id="datasetNumberOfPredicates"
                   ></span>
                   <span class="text-sm text-neutral-500 dark:text-neutral-400"
@@ -1851,7 +2183,7 @@
                   class="flex flex-col bg-neutral-50 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-800 p-3 rounded"
                 >
                   <span
-                    class="text-xl font-bold tabular-nums"
+                    class="text-xl text-black dark:text-white font-bold"
                     id="datasetNumberOfObjects"
                   ></span>
                   <span class="text-sm text-neutral-500 dark:text-neutral-400"
@@ -1874,7 +2206,7 @@
         <div class="dialog-header">
           <div>
             <h2 class="dialog-title">Help</h2>
-            <p class="dialog-subtitle">Keyboard shortcuts for the QLever UI.</p>
+            <p class="dialog-subtitle">Keyboard shortcuts for Qlue-UI.</p>
           </div>
           <button
             id="helpClose"
@@ -2156,7 +2488,7 @@
                     <span
                       class="font-semibold text-neutral-800 dark:text-neutral-200 text-[16px]"
                     >
-                      QLever UI token
+                      Qlue-UI token
                     </span>
                     <span
                       class="font-normal text-neutral-400 dark:text-neutral-500"

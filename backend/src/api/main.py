@@ -5,6 +5,7 @@ import re
 import shutil
 from contextlib import asynccontextmanager
 from importlib.resources import files
+from mimetypes import guess_type
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
@@ -13,12 +14,14 @@ import websockets
 from fastapi import APIRouter, Body, Depends, FastAPI, Header, HTTPException, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from starlette.datastructures import Headers
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from starlette.responses import HTMLResponse, Response
 from starlette.types import Scope
 
-from .config_store import ConfigStore
+from .config_store import ConfigStore, is_dir_mode
 from .database import connect
+from .diagnostics import format_report, has_errors
 from .example_store import ExampleStore
 from .models import (
     ExampleQuery,
@@ -32,6 +35,10 @@ from .query_store import QueryStore
 logger = logging.getLogger("uvicorn.error")
 
 CONFIG_PATH = Path(os.getenv("CONFIG_PATH", "config.yaml")).resolve()
+# Shipped defaults, used to seed CONFIG_PATH / EXAMPLES_DIR on a fresh checkout
+DEFAULTS_DIR = Path(__file__).parent / "defaults"
+DEFAULT_CONFIG = DEFAULTS_DIR / "config.yaml"
+DEFAULT_EXAMPLES = DEFAULTS_DIR / "examples"
 EXAMPLES_DIR = Path(os.getenv("EXAMPLES_DIR", "examples")).resolve()
 DB_PATH = Path(os.getenv("DB_FILE", "shared-queries.db")).resolve()
 FRONTEND_DIR = Path(os.getenv("FRONTEND_DIR", "frontend_dist"))
@@ -65,11 +72,35 @@ class SPAStaticFiles(StaticFiles):
         if path in ("", ".", "index.html"):
             return HTMLResponse(self._index)
         try:
-            return await super().get_response(path, scope)
+            response = await self._get_precompressed(path, scope)
+            return response if response else await super().get_response(path, scope)
         except StarletteHTTPException as ex:
             if ex.status_code == 404:  # SPA fallback (e.g. deep links)
                 return HTMLResponse(self._index)
             raise
+
+    async def _get_precompressed(self, path: str, scope: Scope) -> Response | None:
+        """Serve a build-time .br/.gz variant if one exists and the client takes it.
+
+        The frontend build pre-compresses its assets (see frontend/scripts/compress.mjs)
+        so the ~5.7 MB WASM language server is not re-compressed on every request.
+        """
+        assert self.directory
+        accepted = Headers(scope=scope).get("accept-encoding", "")
+        for encoding, suffix in (("br", ".br"), ("gzip", ".gz")):
+            if encoding not in accepted:
+                continue
+            if not (Path(self.directory) / (path + suffix)).is_file():
+                continue
+            response = await super().get_response(path + suffix, scope)
+            # Keep the media type of the *uncompressed* file; only the transfer differs.
+            response.headers["content-type"] = (
+                guess_type(path)[0] or "application/octet-stream"
+            )
+            response.headers["content-encoding"] = encoding
+            response.headers["vary"] = "Accept-Encoding"
+            return response
+        return None
 
 
 def require_api_key(x_api_key: str | None = Header(default=None)):
@@ -79,6 +110,15 @@ def require_api_key(x_api_key: str | None = Header(default=None)):
 
 # ── Stores ─────────────────────────────────────────────────────────────────
 config_store = ConfigStore(CONFIG_PATH)
+# Load and report at import: raising out of the lifespan instead would bury the
+# report under a starlette traceback, which is what made config errors unreadable.
+_config_diagnostics = config_store.load()
+if _config_diagnostics:
+    _report = format_report(_config_diagnostics)
+    if has_errors(_config_diagnostics):
+        logger.error("Invalid configuration:\n\n%s\n", _report)
+        raise SystemExit(1)
+    logger.warning("Configuration warnings:\n\n%s\n", _report)
 example_store = ExampleStore(EXAMPLES_DIR)
 db = connect(DB_PATH)
 query_store = QueryStore(db)
@@ -92,16 +132,28 @@ async def lifespan(_: FastAPI):
         lines = banner.read_text().splitlines()
         tagline = "SPARQL web editor"
         width = shutil.get_terminal_size(fallback=(80, 24)).columns
-        # cyan banner, yellow tagline
-        centered = "\n".join(line.center(width) for line in lines)
-        print(f"\n\033[36m{centered}\033[0m")
+        # cyan banner, yellow tagline. Each line is colored on its own: log
+        # collectors (docker compose, journald) prefix every line and reset the
+        # color with it, so one escape around the whole block only paints row 1.
+        centered = "\n".join(f"\033[36m{line.center(width)}\033[0m" for line in lines)
+        print(f"\n{centered}")
         print(f"\033[33m{tagline.center(width)}\033[0m\n")
-    logger.info("Base path:             %s", BASE_PATH)
+    logger.info("URL-Base path:         %s", BASE_PATH)
     logger.info("Config path:           %s", CONFIG_PATH)
     logger.info("Examples dir:          %s", EXAMPLES_DIR)
     logger.info("Shared Query Database: %s", DB_PATH)
     logger.info("API key:               %s", "set" if API_KEY else "not set")
-    config_count = await config_store.load()
+    if (
+        DEFAULT_CONFIG.is_file()
+        and not is_dir_mode(CONFIG_PATH)
+        and not CONFIG_PATH.exists()
+    ):
+        shutil.copyfile(DEFAULT_CONFIG, CONFIG_PATH)
+        logger.info("Seeded %s from %s", CONFIG_PATH, DEFAULT_CONFIG)
+    if DEFAULT_EXAMPLES.is_dir() and not EXAMPLES_DIR.exists():
+        shutil.copytree(DEFAULT_EXAMPLES, EXAMPLES_DIR)
+        logger.info("Seeded %s from %s", EXAMPLES_DIR, DEFAULT_EXAMPLES)
+    config_count = config_store.count()
     query_count = query_store.count()
     example_count = example_store.count()
     logger.info(
@@ -117,7 +169,7 @@ async def lifespan(_: FastAPI):
 # ── App & Routes ─────────────────────────────────────────────────────────
 
 app = FastAPI(
-    title="QLever-UI JSON API",
+    title="Qlue-UI JSON API",
     version="1.0.0",
     description="Expose SPARQL endpoint configurations, shared queries and example as JSON API.",
     lifespan=lifespan,
@@ -144,7 +196,7 @@ async def health():
 async def list_endpoints() -> dict[str, SparqlEndpointConfiguration]:
     """Retrieve all public endpoint configurations (hidden endpoints are excluded)."""
     data = await config_store.get_all()
-    return data
+    return {slug: config for slug, config in data.items() if not config.get("hidden")}
 
 
 @router.get("/endpoints/{slug}/", response_model_exclude_none=True)
@@ -210,8 +262,8 @@ async def list_examples(slug: Slug) -> list[ExampleQuery]:
     """Retrieve all example queries for an endpoint. Returns an empty list if none exist."""
     try:
         return [
-            ExampleQuery(name=name, query=query)
-            for name, query in example_store.list(slug)
+            ExampleQuery(name=name, query=query, order=order)
+            for name, query, order in example_store.list(slug)
         ]
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid slug")
@@ -219,9 +271,14 @@ async def list_examples(slug: Slug) -> list[ExampleQuery]:
 
 @router.put("/endpoints/{slug}/examples/", dependencies=[Depends(require_api_key)])
 async def update_example(slug: Slug, example: ExampleQuery):
-    """Overwrite the query of an existing example, preserving its frontmatter."""
+    """Overwrite the query of an existing example, preserving its frontmatter.
+    An omitted `order` leaves the example's current position untouched; `null`
+    removes it, sending the example to the end of the listing."""
     try:
-        example_store.update(slug, example.name, example.query)
+        if "order" in example.model_fields_set:
+            example_store.update(slug, example.name, example.query, example.order)
+        else:
+            example_store.update(slug, example.name, example.query)
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid slug")
     except FileNotFoundError:
@@ -238,13 +295,30 @@ async def update_example(slug: Slug, example: ExampleQuery):
 async def create_example(slug: Slug, example: ExampleQuery):
     """Create a new example query. Returns 409 if the name is already taken."""
     try:
-        example_store.create(slug, example.name, example.query)
+        example_store.create(slug, example.name, example.query, example.order)
     except ValueError:
         raise HTTPException(status_code=400, detail="Invalid slug")
     except FileExistsError:
         raise HTTPException(
             status_code=409, detail=f'Example "{example.name}" already exists'
         )
+
+
+@router.put(
+    "/endpoints/{slug}/examples/order",
+    dependencies=[Depends(require_api_key)],
+    status_code=204,
+)
+async def reorder_examples(slug: Slug, names: list[str] = Body()):
+    """Reorder an endpoint's examples: the named examples are assigned
+    positions 1..n, in the given order. Examples not named are left untouched,
+    so send the complete list for a fully predictable ordering."""
+    try:
+        example_store.reorder(slug, names)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid slug")
+    except FileNotFoundError as e:
+        raise HTTPException(status_code=404, detail=f'Example "{e.args[0]}" not found')
 
 
 @router.delete(

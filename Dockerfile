@@ -1,5 +1,5 @@
 # ---- Stage 1: Build the frontend ----
-FROM node:22.23.1-alpine AS frontend
+FROM node:24.21.0-alpine AS frontend
 
 WORKDIR /app
 
@@ -15,7 +15,7 @@ RUN npm run build
 # ---- Stage 2: Install Python dependencies ----
 FROM python:3.14-slim AS builder
 
-COPY --from=ghcr.io/astral-sh/uv:0.11.28 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.12.22 /uv /uvx /bin/
 
 ENV UV_COMPILE_BYTECODE=1 \
     UV_LINK_MODE=copy \
@@ -46,6 +46,10 @@ COPY --chown=appuser:appuser backend/configs configs/
 COPY --from=frontend /app/dist frontend_dist/
 COPY --chown=appuser:appuser config.default.yaml config.yaml
 RUN mkdir data/ && chown appuser:appuser data/
+# Put the shipped defaults in place at build time, so the running container
+# never needs to write to /app to seed them.
+COPY --chown=appuser:appuser backend/src/api/defaults/examples examples/
+COPY --chown=appuser:appuser backend/src/api/defaults/config.yaml config.yaml
 
 ENV PATH="/app/.venv/bin:$PATH" \
     PYTHONDONTWRITEBYTECODE=1 \
@@ -55,4 +59,5 @@ USER appuser
 
 EXPOSE 7000
 
-CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "7000", "--proxy-headers", "--forwarded-allow-ips", "*"]
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "7000", \
+    "--proxy-headers", "--forwarded-allow-ips", "*", "--use-colors"]

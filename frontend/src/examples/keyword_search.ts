@@ -1,5 +1,5 @@
 // ┌──────────────────────────────────────┐ \\
-// │ Copyright © 2024-2025 Ioannis Nezis  │ \\
+// │ Copyright © 2024-2026 Ioannis Nezis  │ \\
 // ├──────────────────────────────────────┤ \\
 // │ Licensed under the MIT license.      │ \\
 // └──────────────────────────────────────┘ \\
@@ -69,10 +69,11 @@ export function setupKeywordSearch() {
 
     let hits = 0;
     examplesFiltered = examples.filter((example) => {
-      const exampleName = example.innerText.trim();
+      const nameSpan = example.querySelector('.example-name') as HTMLSpanElement;
+      const exampleName = nameSpan.innerText.trim();
       if (matchesAllKeywords(exampleName, keywords)) {
         example.classList.add('keyword-search-match');
-        example.innerHTML = highlightMatches(exampleName, keywords, highlightClasses);
+        nameSpan.innerHTML = highlightMatches(exampleName, keywords, highlightClasses);
         hits++;
         return true;
       } else {

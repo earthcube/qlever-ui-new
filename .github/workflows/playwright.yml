@@ -9,18 +9,15 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v6
+    - uses: actions/checkout@v7
+    - uses: actions/setup-node@v7
       with:
-        node-version: 22
+        node-version: 24
 
-    - uses: astral-sh/setup-uv@v5
+    - uses: astral-sh/setup-uv@v10.2.0
     - name: Install Python dependencies
       working-directory: backend
       run: uv sync
-    - name: Setup backend config
-      working-directory: backend
-      run: cp ../config.default.yaml config.yaml
     - name: Install node dependencies (webapp)
       working-directory: frontend
       run: npm ci
@@ -33,7 +30,7 @@ jobs:
       run: echo "version=$(npx playwright --version | awk '{print $2}')" >> $GITHUB_OUTPUT
     - name: Cache Playwright browsers
       id: playwright-cache
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: ~/.cache/ms-playwright
         key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}

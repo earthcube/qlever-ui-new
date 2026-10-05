@@ -65,7 +65,7 @@ export function getCookie(name: string): string | null {
 /** Logs the build-time git commit hash to the console and shows it via toast on demand. */
 export function showCommitHash() {
   if (__GIT_COMMIT__) {
-    console.log(`qlever-ui commit: ${__GIT_COMMIT__}`);
+    console.log(`qlue-ui commit: ${__GIT_COMMIT__}`);
   }
 }
 
@@ -76,4 +76,14 @@ export function displayVersion() {
       detail: { type: 'info', message: `Build: ${hash}`, duration: 5000 },
     })
   );
+}
+
+/**
+ * Escapes `text` for interpolation into a toast message, which is assigned as
+ * raw HTML.
+ */
+export function escapeHtml(text: string): string {
+  const element = document.createElement('span');
+  element.textContent = text;
+  return element.innerHTML;
 }

@@ -1,8 +1,10 @@
 services:
   ui:
-    image: ghcr.io/qlever-dev/qlever-ui-new:edge
-    volumes:
-        - ./config.default.yaml:/app/config.yaml
+    image: ghcr.io/qlever-dev/qlue-ui:edge
+    # The image already ships the default endpoints at /app/config.yaml.
+    # To use your own, mount it over that path:
+    # volumes:
+    #     - ./config.yaml:/app/config.yaml
     ports:
       - 80:7000
 

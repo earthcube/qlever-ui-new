@@ -1,8 +1,12 @@
 # SPARQL Endpoints
 
-All SPARQL endpoints that Qlever-UI offers to its users are defined in a YAML
+All SPARQL endpoints that Qlue-UI offers to its users are defined in a YAML
 configuration. The backend loads it at startup from the path in the
 `CONFIG_PATH` environment variable (default: `config.yaml`).
+
+If that path is a YAML file that does not exist yet, it is created on startup
+as a copy of the shipped `src/api/defaults/config.yaml`, so a fresh checkout comes up
+with a working set of endpoints.
 
 ## Two layouts
 
@@ -59,6 +63,7 @@ letters, digits, and inner hyphens, at most 64 characters.
 | `url` | URL | yes | The SPARQL endpoint URL queries are sent to. |
 | `engine` | string | no | The SPARQL engine behind the endpoint. Setting `QLever` unlocks QLever-specific features such as the [Query Execution Tree View](../features/analysis.md) and result views for update operations. |
 | `default` | bool | no | Whether this endpoint is pre-selected when the UI loads. Defaults to `false`. |
+| `hidden` | bool | no | Whether this endpoint is kept out of the public endpoint list. It is not offered in the endpoint selector and not returned by `GET /endpoints/`; it can only be used by someone who knows its slug in the URL, and is then shown as the current selection. Defaults to `false`. |
 | `sort_key` | string | no | Endpoints are ordered by this key in the endpoint selector (lexicographic, e.g. `A1`, `A2`, `B1`). |
 | `prefix_map` | map | no | Mapping of prefix → IRI, used by the language server for completion and for automatic `PREFIX` declarations. |
 | `map_view_url` | URL | no | Base URL of a [petrimaps](https://github.com/ad-freiburg/petrimaps) instance used to render geometry results on a map. |
@@ -173,3 +178,22 @@ curl -X PATCH http://localhost/ui-api/endpoints/olympics/ \
 changed, nested objects like `query_templates` are replaced in full, and an
 explicit `null` removes the endpoint's own override so the preset-supplied
 value applies again.
+
+## Checking a config before starting
+
+Config problems are reported at startup — every problem at once, with the file
+and line — and the backend refuses to start if any of them is an error.
+Warnings (for example two endpoints marked `default: true`) are printed and the
+backend starts anyway.
+
+To check a file without starting the backend:
+
+```bash
+cd backend
+uv run python -m api.check_config config.yaml
+```
+
+It prints the same report and exits non-zero if the config has errors, which
+makes it usable as a pre-deploy or CI check. Omit the path to fall back to
+`CONFIG_PATH`, or `config.yaml`. Both single-file and directory mode are
+supported.
